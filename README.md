@@ -17,13 +17,13 @@ ESPHome example configuration to monitor and control aJSD 6KHB inverter via rs48
 ## Schematics
 
 <a href="https://github.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/blob/main/images/jsdsolar-img2.png" target="_blank">
-  <img src="https://github.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/blob/main/images/jsdsolar-img2.png" height="172">
+  <img src="https://github.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/blob/main/images/jsdsolar-img2.png" height="250">
 </a>
 
 Inverter provides rs485 pins A and B on connector related to CT connection
 
 <a href="https://github.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/blob/main/images/jsdsolar-img1.png" target="_blank">
-  <img src="https://github.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/blob/main/images/jsdsolar-img1.png" height="172">
+  <img src="https://github.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/blob/main/images/jsdsolar-img1.png" height="250">
 </a>
 
 ```
@@ -62,6 +62,9 @@ The inverter provides +5V and GND on pin 1 and 4 of "hidden"  USB (Data Logger) 
 
 You can use a cheap DC-DC converter to power the ESP with 3.3V but most oe esp32 boards have 5V input and 3.3V output.
 
+<a href="https://github.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/blob/main/images/jsdsolar-img3.png" target="_blank">
+  <img src="https://github.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/blob/main/images/jsdsolar-img3.png" height="800">
+</a>
 
 ## Installation in home assistant
 
