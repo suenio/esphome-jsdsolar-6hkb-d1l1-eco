@@ -16,8 +16,8 @@ ESPHome example configuration to monitor and control aJSD 6KHB inverter via rs48
 
 ## Schematics
 
-<a href="https://raw.githubusercontent.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/main/images/jsdsolar-img1.jpg" target="_blank">
-  <img src="https://raw.githubusercontent.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/main/images/jsdsolar-img1.jpg" height="172">
+<a href="https://github.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/blob/main/images/jsdsolar-img1.png" target="_blank">
+  <img src="https://github.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/blob/main/images/jsdsolar-img1.png" height="172">
 </a>
 
 
