@@ -58,12 +58,20 @@ self assembled Generic ESP32 board with RS485toTTL converter
 
 ```
 
-The inverter provides +5V and GND on pin 1 and 4 of "hidden"  USB (Data Logger) connector. 
+The inverter provides +5V and GND on pin 1 and 4 of "hidden"  USB (Data Logger) connector. (See picture below but keep in mind that +5V is blue wire and GND is red wire on the picture). 
 
-You can use a cheap DC-DC converter to power the ESP with 3.3V but most oe esp32 boards have 5V input and 3.3V output.
+<a href="https://github.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/blob/main/images/jsdsolar-img4.jpeg" target="_blank">
+  <img src="https://github.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/blob/main/images/jsdsolar-img4.jpeg" height="400">
+</a>
+
+For simplicity you can buy 4pin JST XH connector
+
+Also you can use a cheap DC-DC converter to power the ESP with 3.3V but most oe esp32 boards have 5V input and 3.3V output.
+
+Finally your results after installing esphome code on the lilygo device will be:
 
 <a href="https://github.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/blob/main/images/jsdsolar-img3.png" target="_blank">
-  <img src="https://github.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/blob/main/images/jsdsolar-img3.png" height="800">
+  <img src="https://github.com/suenio/esphome-jsdsolar-6hkb-d1l1-eco/blob/main/images/jsdsolar-img3.png" height="1200">
 </a>
 
 ## Installation in home assistant
