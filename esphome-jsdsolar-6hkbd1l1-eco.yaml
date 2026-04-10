@@ -90,28 +90,28 @@ modbus_controller:
   - id: fast
     address: 1
     modbus_id: modbus1
-    update_interval: 10s
+    update_interval: 15s
     setup_priority: -10
     #command_throttle: 10ms
 
   - id: medium
     address: 1
     modbus_id: modbus1
-    update_interval: 20s
+    update_interval: 5s
     setup_priority: -10
     command_throttle: 2ms
 
   - id: slow
     address: 1
     modbus_id: modbus1
-    update_interval: 30s
+    update_interval: 5s
     setup_priority: -10
     command_throttle: 30ms
   
   - id: very_slow
     address: 1
     modbus_id: modbus1
-    update_interval: 60s
+    update_interval: 10s
     setup_priority: -10
     command_throttle: 50ms
 
@@ -120,7 +120,7 @@ sensor:
 # ⚡ SYSTEM INFORMATION
 # =========================
   - platform: modbus_controller
-    modbus_controller_id: very_slow
+    modbus_controller_id: fast
     id: number_of_mppts
     name: "${cat1} Number of MPPTs"
     entity_category: DIAGNOSTIC
@@ -129,7 +129,7 @@ sensor:
     value_type: U_WORD
   
   - platform: modbus_controller
-    modbus_controller_id: very_slow
+    modbus_controller_id: fast
     id: rated_voltage
     name: "${cat1} Rated Voltage"
     entity_category: DIAGNOSTIC
@@ -140,7 +140,7 @@ sensor:
     filters: [{ multiply: 0.1 }] 
 
   - platform: modbus_controller
-    modbus_controller_id: very_slow
+    modbus_controller_id: fast
     id: rated_frequency
     name: "${cat1} Rated Frequency"
     entity_category: DIAGNOSTIC
@@ -151,7 +151,7 @@ sensor:
     filters: [{ multiply: 0.01 }] 
 
   - platform: modbus_controller
-    modbus_controller_id: very_slow
+    modbus_controller_id: fast
     id: rated_power
     name: "${cat1} Rated Power"
     entity_category: DIAGNOSTIC
@@ -359,7 +359,7 @@ sensor:
     filters: [{ multiply: 0.1 }]
 
 #  - platform: modbus_controller
-#    modbus_controller_id: medium
+#    modbus_controller_id: fast
 #    id: pv3_voltage
 #    name: "${cat2} PV3 Voltage"
 #    entity_category: DIAGNOSTIC
@@ -369,7 +369,7 @@ sensor:
 #    filters: [{ multiply: 0.1 }]
 
 #  - platform: modbus_controller
-#    modbus_controller_id: medium
+#    modbus_controller_id: fast
 #    id: pv3_current
 #    name: "${cat2} PV3 Current"
 #    entity_category: DIAGNOSTIC
@@ -379,7 +379,7 @@ sensor:
 #    filters: [{ multiply: 0.01 }]
 
 #  - platform: modbus_controller
-#    modbus_controller_id: medium
+#    modbus_controller_id: fast
 #    id: pv3_power
 #    name: "${cat2} PV3 Power (MPPT3)"
 #    entity_category: DIAGNOSTIC
@@ -389,7 +389,7 @@ sensor:
 #    filters: [{ multiply: 0.1 }]
 
 #  - platform: modbus_controller
-#    modbus_controller_id: medium
+#    modbus_controller_id: fast
 #    id: pv4_voltage
 #    name: "${cat2} PV4 Voltage"
 #    entity_category: DIAGNOSTIC
@@ -399,7 +399,7 @@ sensor:
 #    filters: [{ multiply: 0.1 }]
 
 #  - platform: modbus_controller
-#    modbus_controller_id: medium
+#    modbus_controller_id: fast
 #    id: pv4_current
 #    name: "${cat2} PV4 Current"
 #    entity_category: DIAGNOSTIC
@@ -409,7 +409,7 @@ sensor:
 #    filters: [{ multiply: 0.01 }]
 
 #  - platform: modbus_controller
-#    modbus_controller_id: medium
+#    modbus_controller_id: fast
 #    id: pv4_power
 #    name: "${cat2} PV4 Power (MPPT4)"
 #    entity_category: DIAGNOSTIC
@@ -435,7 +435,7 @@ sensor:
 # ⚡ ENERGY
 # =========================
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: total_energy
     name: "${cat2} Total Energy"
     entity_category: DIAGNOSTIC
@@ -447,7 +447,7 @@ sensor:
     state_class: total_increasing
   
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: total_generation_time
     name: "${cat2} Total Generation Time"
     entity_category: DIAGNOSTIC
@@ -458,7 +458,7 @@ sensor:
     state_class: total_increasing
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: today_energy
     name: "${cat2} Today Energy"
     entity_category: DIAGNOSTIC
@@ -490,7 +490,7 @@ sensor:
     filters: [{ multiply: 0.1 }]
 
   - platform: modbus_controller
-    modbus_controller_id: slow
+    modbus_controller_id: fast
     id: today_peak_power
     name: "${cat2} Today Peak Power"
     entity_category: DIAGNOSTIC
@@ -501,7 +501,7 @@ sensor:
     filters: [{ multiply: 0.1 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: power_factor
     name: "${cat2} Power Factor"
     entity_category: DIAGNOSTIC
@@ -511,7 +511,7 @@ sensor:
     filters: [{ multiply: 0.1 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: phase_r_watt_of_grid
     name: "${cat2} Phase R watt of grid"
     entity_category: DIAGNOSTIC
@@ -522,7 +522,7 @@ sensor:
     filters: [{ multiply: 0.1 }]
   
 #  - platform: modbus_controller
-#    modbus_controller_id: slow
+#    modbus_controller_id: fast
 #    id: phase_s_watt_of_grid
 #    name: "${cat2} Phase S watt of grid"
 #    entity_category: DIAGNOSTIC
@@ -533,7 +533,7 @@ sensor:
 #    filters: [{ multiply: 0.1 }]
   
 #  - platform: modbus_controller
-#    modbus_controller_id: slow
+#    modbus_controller_id: fast
 #    id: phase_t_watt_of_grid
 #    name: "${cat2} Phase T watt of grid"
 #    entity_category: DIAGNOSTIC
@@ -544,7 +544,7 @@ sensor:
 #    filters: [{ multiply: 0.1 }]
   
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: accumulated_energy_of_positive
     name: "${cat2} Accumulated Energy Of Positie"
     entity_category: DIAGNOSTIC
@@ -555,7 +555,7 @@ sensor:
     filters: [{ multiply: 10 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: accumulated_energy_of_negatie
     name: "${cat2} Accumulated Energy Of Negative"
     entity_category: DIAGNOSTIC
@@ -566,7 +566,7 @@ sensor:
     filters: [{ multiply: 10 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: phase_r_watt_of_load
     name: "${cat2} Phase R watt of load"
     entity_category: DIAGNOSTIC
@@ -577,7 +577,7 @@ sensor:
     filters: [{ multiply: 0.1 }]
   
 #  - platform: modbus_controller
-#    modbus_controller_id: slow
+#    modbus_controller_id: fast
 #    id: phase_s_watt_of_load
 #    name: "${cat2} Phase S watt of load"
 #    entity_category: DIAGNOSTIC
@@ -588,7 +588,7 @@ sensor:
 #    filters: [{ multiply: 0.1 }]
 
 #  - platform: modbus_controller
-#    modbus_controller_id: slow
+#    modbus_controller_id: fast
 #    id: phase_t_watt_of_load
 #    name: "${cat2} Phase T watt of load"
 #    entity_category: DIAGNOSTIC
@@ -599,7 +599,7 @@ sensor:
 #    filters: [{ multiply: 0.1 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: accumulated_energy_of_load
     name: "${cat2} Accumulated Energy Of Load"
     entity_category: DIAGNOSTIC
@@ -610,7 +610,7 @@ sensor:
     filters: [{ multiply: 10 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: l1_n_phase_voltage_of_grid
     name: "${cat2} L1-N phase voltage of grid"
     entity_category: DIAGNOSTIC
@@ -621,7 +621,7 @@ sensor:
     filters: [{ multiply: 0.1 }]
 
 #  - platform: modbus_controller
-#    modbus_controller_id: slow
+#    modbus_controller_id: fast
 #    id: l2_n_phase_voltage_of_grid
 #    name: "${cat2} L2-N phase voltage of grid"
 #    entity_category: DIAGNOSTIC
@@ -632,7 +632,7 @@ sensor:
 #    filters: [{ multiply: 0.1 }]
 
 #  - platform: modbus_controller
-#    modbus_controller_id: slow
+#    modbus_controller_id: fast
 #    id: l3_n_phase_voltage_of_grid
 #    name: "${cat2} L3-N phase voltage of grid"
 #    entity_category: DIAGNOSTIC
@@ -643,7 +643,7 @@ sensor:
 #    filters: [{ multiply: 0.1 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: l1_current_of_grid
     name: "${cat2} L1 current of grid"
     entity_category: DIAGNOSTIC
@@ -654,7 +654,7 @@ sensor:
     filters: [{ multiply: 0.01 }]
 
 #  - platform: modbus_controller
-#    modbus_controller_id: slow
+#    modbus_controller_id: fast
 #    id: l2_current_of_grid
 #    name: "${cat2} L2 current of grid"
 #    entity_category: DIAGNOSTIC
@@ -665,7 +665,7 @@ sensor:
 #    filters: [{ multiply: 0.01 }]
 
 #  - platform: modbus_controller
-#    modbus_controller_id: slow
+#    modbus_controller_id: fast
 #    id: l3_current_of_grid
 #    name: "${cat2} L3 current of grid"
 #    entity_category: DIAGNOSTIC
@@ -676,7 +676,7 @@ sensor:
 #    filters: [{ multiply: 0.01 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: l1_n_phase_voltage_of_load
     name: "${cat2} L1-N phase voltage of load"
     entity_category: DIAGNOSTIC
@@ -687,7 +687,7 @@ sensor:
     filters: [{ multiply: 0.1 }]
 
 #  - platform: modbus_controller
-#    modbus_controller_id: slow
+#    modbus_controller_id: fast
 #    id: l2_n_phase_voltage_of_load
 #    name: "${cat2} L2-N phase voltage of load"
 #    entity_category: DIAGNOSTIC
@@ -698,7 +698,7 @@ sensor:
 #    filters: [{ multiply: 0.1 }]
 
 #  - platform: modbus_controller
-#    modbus_controller_id: slow
+#    modbus_controller_id: fast
 #    id: l3_n_phase_voltage_of_load
 #    name: "${cat2} L3-N phase voltage of grloadid"
 #    entity_category: DIAGNOSTIC
@@ -709,7 +709,7 @@ sensor:
 #    filters: [{ multiply: 0.1 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: l1_current_of_load
     name: "${cat2} L1 current of load"
     entity_category: DIAGNOSTIC
@@ -720,7 +720,7 @@ sensor:
     filters: [{ multiply: 0.01 }]
 
 #  - platform: modbus_controller
-#    modbus_controller_id: slow
+#    modbus_controller_id: fast
 #    id: l2_current_of_load
 #    name: "${cat2} L2 current of load"
 #    entity_category: DIAGNOSTIC
@@ -731,7 +731,7 @@ sensor:
 #    filters: [{ multiply: 0.01 }]
 
 #  - platform: modbus_controller
-#    modbus_controller_id: slow
+#    modbus_controller_id: fast
 #    id: l3_current_of_load
 #    name: "${cat2} L3 current of load"
 #    entity_category: DIAGNOSTIC
@@ -742,7 +742,7 @@ sensor:
 #    filters: [{ multiply: 0.01 }]
 
   - platform: modbus_controller
-    modbus_controller_id: slow
+    modbus_controller_id: fast
     id: today_import_energy
     name: "${cat2} Today import Energy"
     entity_category: DIAGNOSTIC
@@ -753,7 +753,7 @@ sensor:
     filters: [{ multiply: 10 }]
 
   - platform: modbus_controller
-    modbus_controller_id: slow
+    modbus_controller_id: fast
     id: today_export_energy
     name: "${cat2} Today export Energy"
     entity_category: DIAGNOSTIC
@@ -764,7 +764,7 @@ sensor:
     filters: [{ multiply: 10 }]
 
   - platform: modbus_controller
-    modbus_controller_id: slow
+    modbus_controller_id: fast
     id: today_load_energy
     name: "${cat2} Today load Energy"
     entity_category: DIAGNOSTIC
@@ -775,7 +775,7 @@ sensor:
     filters: [{ multiply: 10 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: frequency_of_grid
     name: "${cat2} Frequency of grid"
     entity_category: DIAGNOSTIC
@@ -789,7 +789,7 @@ sensor:
 # ⚡ ENERGY - EPS
 # =========================
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: phase_r_voltage_of_eps
     name: "${cat2} Phase R voltage of EPS"
     entity_category: DIAGNOSTIC
@@ -800,7 +800,7 @@ sensor:
     filters: [{ multiply: 0.1 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: phase_r_current_of_eps
     name: "${cat2} Phase R current of EPS"
     entity_category: DIAGNOSTIC
@@ -811,7 +811,7 @@ sensor:
     filters: [{ multiply: 0.01 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: phase_r_watt_of_eps
     name: "${cat2} Phase R watt of EPS"
     entity_category: DIAGNOSTIC
@@ -822,7 +822,7 @@ sensor:
     filters: [{ multiply: 0.1 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: frequency_of_eps
     name: "${cat2} Frequency of EPS"
     entity_category: DIAGNOSTIC
@@ -833,7 +833,7 @@ sensor:
     filters: [{ multiply: 0.01 }]
 
   #- platform: modbus_controller
-  #  modbus_controller_id: medium
+  #  modbus_controller_id: fast
   #  id: phase_s_voltage_of_eps
   #  name: "${cat2} Phase S voltage of EPS"
   #  entity_category: DIAGNOSTIC
@@ -844,7 +844,7 @@ sensor:
   #  filters: [{ multiply: 0.1 }]
 
   #- platform: modbus_controller
-  #  modbus_controller_id: slow
+  #  modbus_controller_id: fast
   #  id: phase_s_current_of_eps
   #  name: "${cat2} Phase S current of EPS"
   #  entity_category: DIAGNOSTIC
@@ -855,7 +855,7 @@ sensor:
   #  filters: [{ multiply: 0.01 }]
 
   #- platform: modbus_controller
-  #  modbus_controller_id: slow
+  #  modbus_controller_id: fast
   #  id: phase_s_watt_of_eps
   #  name: "${cat2} Phase S watt of EPS"
   #  entity_category: DIAGNOSTIC
@@ -866,7 +866,7 @@ sensor:
   #  filters: [{ multiply: 0.1 }]
 
   #- platform: modbus_controller
-  #  modbus_controller_id: slow
+  #  modbus_controller_id: fast
   #  id: phase_t_voltage_of_eps
   #  name: "${cat2} Phase T voltage of EPS"
   #  entity_category: DIAGNOSTIC
@@ -877,7 +877,7 @@ sensor:
   #  filters: [{ multiply: 0.1 }]
 
   #- platform: modbus_controller
-  #  modbus_controller_id: slow
+  #  modbus_controller_id: fast
   #  id: phase_t_current_of_eps
   #  name: "${cat2} Phase T current of EPS"
   #  entity_category: DIAGNOSTIC
@@ -888,7 +888,7 @@ sensor:
   #  filters: [{ multiply: 0.01 }]
 
   #- platform: modbus_controller
-  #  modbus_controller_id: slow
+  #  modbus_controller_id: fast
   #  id: phase_t_watt_of_eps
   #  name: "${cat2} Phase T watt of EPS"
   #  entity_category: DIAGNOSTIC
@@ -899,7 +899,7 @@ sensor:
   #  filters: [{ multiply: 0.1 }]
 
   - platform: modbus_controller
-    modbus_controller_id: slow
+    modbus_controller_id: fast
     id: daily_energy_of_eps
     name: "${cat2} Daily Energy of EPS"
     entity_category: DIAGNOSTIC
@@ -910,7 +910,7 @@ sensor:
     filters: [{ multiply: 10 }]
     
   - platform: modbus_controller
-    modbus_controller_id: slow
+    modbus_controller_id: fast
     id: accummulated_energy_to_eps
     name: "${cat2} Accumulated energy to EPS"
     entity_category: DIAGNOSTIC
@@ -924,7 +924,7 @@ sensor:
 # 🔋 BATTERY
 # =========================
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: battery_soc
     name: "${cat2} Battery SOC"
     entity_category: DIAGNOSTIC
@@ -934,7 +934,7 @@ sensor:
     unit_of_measurement: "%"
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: battery_temperature
     name: "${cat2}} Battery Temperature"
     entity_category: DIAGNOSTIC
@@ -944,7 +944,7 @@ sensor:
     unit_of_measurement: "°C"
    
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: battery_voltage
     name: "${cat2} Battery Voltage"
     entity_category: DIAGNOSTIC
@@ -955,7 +955,7 @@ sensor:
     filters: [{ multiply: 0.1 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: battery_current
     name: "${cat2} Battery Current"
     entity_category: DIAGNOSTIC
@@ -966,7 +966,7 @@ sensor:
     filters: [{ multiply: 0.01 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: battery_power
     name: "${cat2} Battery Power"
     entity_category: DIAGNOSTIC
@@ -977,7 +977,7 @@ sensor:
     filters: [{ multiply: 0.1 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: battery_daily_charge_energy
     name: "${cat2} Battery Daily Charge Energy"
     entity_category: DIAGNOSTIC
@@ -988,7 +988,7 @@ sensor:
     filters: [{ multiply: 10 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: battery_accumulated_charge_energy
     name: "${cat2} Battery Accumulated Charge Energy"
     entity_category: DIAGNOSTIC
@@ -999,7 +999,7 @@ sensor:
     filters: [{ multiply: 10 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: battery_daily_discharge_energy
     name: "${cat2} Battery Daily Discharge Energy"
     entity_category: DIAGNOSTIC
@@ -1010,7 +1010,7 @@ sensor:
     filters: [{ multiply: 10 }]
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: battery_accumulated_discharge_energy
     name: "${cat2} Battery Accumulated Discharge Energy"
     entity_category: DIAGNOSTIC
@@ -1021,7 +1021,7 @@ sensor:
     filters: [{ multiply: 10 }]
 
   #- platform: modbus_controller
-  #  modbus_controller_id: medium
+  #  modbus_controller_id: fast
   #  id: warning_information
   #  name: "${cat2} Warning information"
   #  entity_category: DIAGNOSTIC
@@ -1030,7 +1030,7 @@ sensor:
   #  value_type: U_WORD
 
   #- platform: modbus_controller
-  #  modbus_controller_id: medium
+  #  modbus_controller_id: fast
   #  id: fault_information
   #  name: "${cat2} Fault information"
   #  entity_category: DIAGNOSTIC
@@ -1044,7 +1044,7 @@ text_sensor:
 # 🌡 SYSTEM
 # =========================
   - platform: modbus_controller   #ok
-    modbus_controller_id: very_slow
+    modbus_controller_id: fast
     id: device_model
     name: "${cat1} Device Model"
     entity_category: DIAGNOSTIC
@@ -1065,7 +1065,7 @@ text_sensor:
       return newString;
   
   - platform: modbus_controller   #ok
-    modbus_controller_id: very_slow
+    modbus_controller_id: fast
     id: device_serial_number
     name: "${cat1} Device Serial Number"
     entity_category: DIAGNOSTIC
@@ -1086,7 +1086,7 @@ text_sensor:
       return newString;
   
   - platform: modbus_controller   #ok
-    modbus_controller_id: very_slow
+    modbus_controller_id: fast
     id: modbus_protocol_version
     name: "${cat1} Modbus Protocol Version"
     entity_category: DIAGNOSTIC
@@ -1101,7 +1101,7 @@ text_sensor:
       return res;
 
   - platform: modbus_controller  #ok 
-    modbus_controller_id: very_slow
+    modbus_controller_id: fast
     id: master_software_version
     name: "${cat1} Master Software Version"
     entity_category: DIAGNOSTIC
@@ -1122,7 +1122,7 @@ text_sensor:
       return newString;    
   
   - platform: modbus_controller  ##ok
-    modbus_controller_id: very_slow
+    modbus_controller_id: fast
     id: master_software_build_date
     name: "${cat1} Master Software Build Date"
     entity_category: DIAGNOSTIC
@@ -1144,7 +1144,7 @@ text_sensor:
       return newString;    
   
   - platform: modbus_controller  ##ok
-    modbus_controller_id: very_slow
+    modbus_controller_id: fast
     id: slave_firmware_version
     name: "${cat1} Slave Firmware Version"
     entity_category: DIAGNOSTIC
@@ -1165,7 +1165,7 @@ text_sensor:
       return newString;    
   
   - platform: modbus_controller  ##ok
-    modbus_controller_id: very_slow
+    modbus_controller_id: fast
     id: slave_firmware_build_date
     name: "${cat1} Slave Firmware Build Date"
     entity_category: DIAGNOSTIC
@@ -1187,7 +1187,7 @@ text_sensor:
       return newString;    
   
   - platform: modbus_controller  ##ok
-    modbus_controller_id: very_slow
+    modbus_controller_id: fast
     id: grid_phase_number
     name: "${cat1} Grid Phase Number"
     entity_category: DIAGNOSTIC
@@ -1208,7 +1208,7 @@ text_sensor:
       }
 
   #- platform: modbus_controller  ## does not work - cant read this adress -maybe as this is 4.19 vs 4.21 protocol version
-  #  modbus_controller_id: very_slow
+  #  modbus_controller_id: fast
   #  id: ems_firmware_version
   #  name: "${cat1} EMS Firmware Version"
   #  entity_category: DIAGNOSTIC
@@ -1229,7 +1229,7 @@ text_sensor:
   #    return newString;    
 
   #- platform: modbus_controller  ## does not work - cant read this adress -maybe as this is 4.19 vs 4.21 protocol version
-  #  modbus_controller_id: very_slow
+  #  modbus_controller_id: fast
   #  id: ems_firmware_build_date
   #  name: "${cat1} EMS Firmware Build Date"
   #  entity_category: DIAGNOSTIC
@@ -1254,7 +1254,7 @@ text_sensor:
   #    return newString;    
 
   #- platform: modbus_controller  ## does not work - cant read this adress -maybe as this is 4.19 vs 4.21 protocol version
-  #  modbus_controller_id: very_slow
+  #  modbus_controller_id: fast
   #  id: dcdc_firmware_version
   #  name: "${cat1} DCDC Firmware Version"
   #  entity_category: DIAGNOSTIC
@@ -1275,7 +1275,7 @@ text_sensor:
   #    return newString;    
   
   #- platform: modbus_controller  ## does not work - cant read this adress -maybe as this is 4.19 vs 4.21 protocol version
-  #  modbus_controller_id: very_slow
+  #  modbus_controller_id: fast
   #  name: "${cat1} DCDC Firmware Build Date"
   #  entity_category: DIAGNOSTIC
   #  address: 0x1A76
@@ -1297,7 +1297,7 @@ text_sensor:
   #    return newString;    
   
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: inverter_mode
     name: "${cat2} Inverter Mode"
     entity_category: DIAGNOSTIC
@@ -1320,7 +1320,7 @@ text_sensor:
 # 🚨 ERRORS
 # =========================
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: fault_information
     name: "${cat2} Fault Information"
     entity_category: DIAGNOSTIC
@@ -1382,7 +1382,7 @@ text_sensor:
       return values;
 
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     id: warning_information
     name: "${cat2} Warning Information"
     entity_category: DIAGNOSTIC
@@ -1452,154 +1452,6 @@ select:
   
   - platform: modbus_controller                                   
     modbus_controller_id: fast
-    id: once_or_everyday
-    name: "${cat3} Once or Everyday"
-    entity_category: config
-    use_write_multiple: true
-    address: 0x2101
-    value_type: U_WORD
-    optionsmap:
-      "Everyday": 0
-      "Time-based control": 1
-
-  - platform: modbus_controller                                   
-    modbus_controller_id: fast
-    id: charge_start_time_1
-    name: "${cat3} Charge start time 1"
-    entity_category: config
-    use_write_multiple: true
-    address: 0x2102
-    value_type: U_WORD
-    optionsmap:
-      "00:00": 0x0000
-      "01:00": 0x0100
-      "02:00": 0x0200
-      "03:00": 0x0300
-      "04:00": 0x0400
-      "05:00": 0x0500
-      "06:00": 0x0600
-      "07:00": 0x0700
-      "08:00": 0x0800
-      "09:00": 0x0900
-      "10:00": 0x1000
-      "11:00": 0x1100
-      "12:00": 0x1200
-      "13:00": 0x1300
-      "14:00": 0x1400
-      "15:00": 0x1500
-      "16:00": 0x1600
-      "17:00": 0x1700
-      "18:00": 0x1800
-      "19:00": 0x1900
-      "20:00": 0x2000
-      "21:00": 0x2100
-      "22:00": 0x2200
-      "23:00": 0x2300
-  
-  - platform: modbus_controller                                   
-    modbus_controller_id: fast
-    id: charge_end_time_1
-    name: "${cat3} Charge end time 1"
-    entity_category: config
-    use_write_multiple: true
-    address: 0x2103
-    value_type: U_WORD
-    optionsmap:
-      "00:00": 0x0000
-      "01:00": 0x0100
-      "02:00": 0x0200
-      "03:00": 0x0300
-      "04:00": 0x0400
-      "05:00": 0x0500
-      "06:00": 0x0600
-      "07:00": 0x0700
-      "08:00": 0x0800
-      "09:00": 0x0900
-      "10:00": 0x1000
-      "11:00": 0x1100
-      "12:00": 0x1200
-      "13:00": 0x1300
-      "14:00": 0x1400
-      "15:00": 0x1500
-      "16:00": 0x1600
-      "17:00": 0x1700
-      "18:00": 0x1800
-      "19:00": 0x1900
-      "20:00": 0x2000
-      "21:00": 0x2100
-      "22:00": 0x2200
-      "23:00": 0x2300
-
-  - platform: modbus_controller                                   
-    modbus_controller_id: fast
-    id: discharge_start_time_1
-    name: "${cat3} Discharge start time 1"
-    entity_category: config
-    use_write_multiple: true
-    address: 0x2102
-    value_type: U_WORD
-    optionsmap:
-      "00:00": 0x0000
-      "01:00": 0x0100
-      "02:00": 0x0200
-      "03:00": 0x0300
-      "04:00": 0x0400
-      "05:00": 0x0500
-      "06:00": 0x0600
-      "07:00": 0x0700
-      "08:00": 0x0800
-      "09:00": 0x0900
-      "10:00": 0x1000
-      "11:00": 0x1100
-      "12:00": 0x1200
-      "13:00": 0x1300
-      "14:00": 0x1400
-      "15:00": 0x1500
-      "16:00": 0x1600
-      "17:00": 0x1700
-      "18:00": 0x1800
-      "19:00": 0x1900
-      "20:00": 0x2000
-      "21:00": 0x2100
-      "22:00": 0x2200
-      "23:00": 0x2300    
-
-  - platform: modbus_controller                                   
-    modbus_controller_id: fast
-    id: discharge_end_time_1
-    name: "${cat3} Discharge end time 1"
-    entity_category: config
-    use_write_multiple: true
-    address: 0x2102
-    value_type: U_WORD
-    optionsmap:
-      "00:00": 0x0000
-      "01:00": 0x0100
-      "02:00": 0x0200
-      "03:00": 0x0300
-      "04:00": 0x0400
-      "05:00": 0x0500
-      "06:00": 0x0600
-      "07:00": 0x0700
-      "08:00": 0x0800
-      "09:00": 0x0900
-      "10:00": 0x1000
-      "11:00": 0x1100
-      "12:00": 0x1200
-      "13:00": 0x1300
-      "14:00": 0x1400
-      "15:00": 0x1500
-      "16:00": 0x1600
-      "17:00": 0x1700
-      "18:00": 0x1800
-      "19:00": 0x1900
-      "20:00": 0x2000
-      "21:00": 0x2100
-      "22:00": 0x2200
-      "23:00": 0x2300  
-
-  - platform: modbus_controller                                   
-    modbus_controller_id: fast
     id: battery_type_selection
     name: "${cat3} Battery type selection"
     entity_category: config
@@ -1645,40 +1497,8 @@ select:
       "200 Ah": 200
       "280 Ah": 280
       "314 Ah": 314
-    #lambda: |-
-    #  uint16_t value = x;
-    #  switch(value) {
-    #    case 100: return 100;
-    #    case 200: return 200;
-    #    case 280: return 280;
-    #    case 314: return 314;
-    #    default: return 0;
-    #  }
-
-  #- platform: modbus_controller                                   
-  #  modbus_controller_id: fast
-  #  id: grid_charge
-  #  name: "${cat3} Grid charge"
-  #  entity_category: config
-  #  use_write_multiple: true
-  #  address: 0x2115
-  #  value_type: U_WORD
-  #  optionsmap:
-  #    "Disable": 0
-  #    "Enable": 1
-
-  #- platform: modbus_controller                                   
-  #  modbus_controller_id: fast
-  #  id: off_grid_mode
-  #  name: "${cat3} Off-grid mode"
-  #  entity_category: config
-  #  use_write_multiple: true
-  #  address: 0x211C
-  #  value_type: U_WORD
-  #  optionsmap:
-  #    "Disable": 0
-  #    "Enable": 1
   
+    
   - platform: modbus_controller                                   
     modbus_controller_id: fast
     id: rated_output_voltage
@@ -1812,6 +1632,88 @@ select:
       "CT on Load (Meter on Load)": 1
 
 
+  - platform: modbus_controller       #ok inverter settings -> QuickSettings(2) -> Standard Code                          
+    modbus_controller_id: fast
+    id: standard_code
+    name: "${cat4} Standard Code"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x5101
+    value_type: U_WORD
+    optionsmap:
+      "AU Australia AS/NZS 4777.2/.3": 1 
+      #"DE Germany VDE 0126-1-1/A1": 2
+      #"TW Taiwan TW GRID": 3
+      #"DE Germany VDE-AR-N 4105": 4
+      #"JP Japan JETGR0002-1-2.0": 5
+      "IT Italy CEI 0-21": 6       
+      #"SE Sweden SWEDEN Grid": 7
+      "UK British G98": 8      
+      #"UL USA UL": 9
+      #"TL Thailand PEA": 10
+      #"SE Sweden SWEDEN GRID 2007": 11
+      #"NL Netherlands EN50549-1 2019": 12
+      #"TL Thailand MEA": 13
+      #"CN China NB/T 32004": 14
+      "IND India IEC61727": 15
+      "AU Australia AS/NZS 4777.2:2015": 16
+      "NZ Australia AS/NZS 4777.2:2015": 17
+      #"MX Mexico IEEE1547": 18
+      #"UA Ukraine VDE-AR-N 4105": 19
+      #"TW Taiwan CNS 15382:2018": 20
+      #"DE Germany VDE0126-1-1/08.13": 21
+      #"BR Brazil ABNT NBR16149 2013": 22
+      #"CZ Czech EN 50160": 23
+      "UK Britain G99 Type A": 24
+      #"PT Portugal EN50438": 25
+      "ES Spain RD1699 / RD413": 26
+      "ES Spain RD661 / PO12.2": 27
+      #"IT Italy CEI 0-21 ACEA": 28        #ok
+      "DE Germany VDE-AR-N 4105:2018": 29
+      #"BR Brazil IEC61727": 30
+      "EU European EN50549-1:2019": 31
+      "BE Belgium C10/11": 32
+      #"PL Poland EN50438 2013": 33
+      #"DE Germany VDE4110:2018": 34
+      #"EU European EN50549-2:2019": 35
+      #"IT Italy CEI 0-16": 36
+      "ZA South Africa NRS097-2-1": 37
+      #"GR Greek VDE0126 Continent": 38
+      #"GR Greek VDE0126 Islands": 39
+      #"JO Jordan IRR-DCC MV 2015": 40
+      "ES Spain UNE206007 / UNE206006": 41
+      "AU Australia AS4777.2:2015 South Area": 42
+      #"UK Britain G99 Type B": 43
+      #"JO Jordan IRR-TIC 2015": 44
+      #"CZ Czech EN50549-1": 45
+      #"AT Austria TOR Type A": 46
+      #"CY Cyprus 2019": 47
+      #"MX Mexico IEEE1547:2014": 48
+      #"CL Chile 2021": 49
+      #"FR France UTE C15-712-1": 50
+      #"CH Switzerland NA/EEA A2": 51
+      #"CH Switzerland NA/EEA B2": 52
+      #"FR France UTE C15-712-1 Island 50Hz": 53
+      #"FR France UTE C15-712-1 Island 60Hz": 54
+      #"FI Finland VJV Type A": 55
+      #"FI Finland VJV Type B": 56
+      #"NO Norway EN50549-1": 57
+      "PL Poland NC RFG Type A": 58
+      #"PL Poland NC RFG Type B": 59
+      #"BE Belgium C10/11 MV": 60
+      #"AT Austria TOR Type B": 61
+      #"IL Israel IS 4777": 62
+      #"DK1 West Denmark Type A & B LV": 63
+      #"DK1 West Denmark Type B MV": 64
+      #"DK2 East Denmark Type A & B LV": 65
+      #"DK2 East Denmark Type B MV": 66
+      "ES Spain NT": 69
+      "AU Australia Vector": 71
+      "UK United Kingdom G99": 73
+      "UK United Kingdom G98": 77
+      "Not defined": 65535
+
+
 number:
   - platform: modbus_controller                                   
     modbus_controller_id: fast
@@ -1847,10 +1749,10 @@ number:
     write_lambda: |-
       return x * 10.0f;
 
-  - platform: modbus_controller    #this is setup for max as 1500W but can be up to max of inverter specs that is 6000W                               
+  - platform: modbus_controller    #ok inverter settings -> QuickSettings(2) -> Max Grid Charge Power (W)                                   
     modbus_controller_id: fast
-    id: maximum_grid_charger_power
-    name: "${cat3} Maximum gid charger power"
+    id: max_grid_charger_power
+    name: "${cat3} Max Grid Charger Power"
     entity_category: config
     use_write_multiple: true
     address: 0x2116
@@ -1859,10 +1761,10 @@ number:
     max_value: 6000    #up to 6000
     unit_of_measurement: "W"
 
-  - platform: modbus_controller                               
+  - platform: modbus_controller    #ok inverter settings -> Grid Charge stop Battery SOC (%)   or   settings -> QuickSettings(2) ->  Grid Charge stop Battery SOC (%)                   
     modbus_controller_id: fast
-    id: battery_capacity_of_grid_charger_end
-    name: "${cat3} Battery capacity of grid charger end"
+    id: grid_charge_stop_battery_soc
+    name: "${cat3} grid_charge_stop_battery_soc"
     entity_category: config
     use_write_multiple: true
     address: 0x2117
@@ -1965,6 +1867,18 @@ number:
     write_lambda: |-
       return x * 100.0f;
   
+  - platform: modbus_controller     #ok inverter settings -> backup reserve (%)                              
+    modbus_controller_id: fast
+    id: backup_reserve
+    name: "${cat3} Backup Reserve"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x214A
+    value_type: U_WORD
+    min_value: 0
+    max_value: 100    
+    unit_of_measurement: "%"
+    
   - platform: modbus_controller                                   
     modbus_controller_id: fast
     id: maximum_feed_in_grid_power
@@ -1979,7 +1893,7 @@ number:
     
 switch:
   - platform: modbus_controller
-    modbus_controller_id: medium
+    modbus_controller_id: fast
     name: "${cat4} Inverter Power"
     address: 0x6001
     register_type: holding
@@ -1989,14 +1903,22 @@ switch:
     write_lambda: |-
       return !x;
 
+  - platform: modbus_controller   #ok inverter settings -> Charge From Grid       or      settings -> QuickSettings(2) -> Charge From Grid                          
+    modbus_controller_id: fast
+    id: charge_from_grid
+    name: "${cat3} Charge from Grid"
+    entity_category: config
+    register_type: holding    
+    address: 0x2115
+    bitmask: 0x0001
+
   - platform: modbus_controller                                   
     modbus_controller_id: fast
-    id: grid_charge
-    name: "${cat3} Grid charge"
+    id: time_based_control
+    name: "${cat3} Time Based Control"
     entity_category: config
     register_type: holding
-    #use_write_multiple: true
-    address: 0x2115
+    address: 0x214D
     bitmask: 0x0001
 
   - platform: modbus_controller                                   
@@ -2004,9 +1926,8 @@ switch:
     id: off_grid_mode
     name: "${cat3} Off-grid mode"
     entity_category: config
-    #use_write_multiple: true
-    address: 0x211C
     register_type: holding
+    address: 0x211C
     bitmask: 0x0001
     
 #button:
