@@ -1,7 +1,7 @@
 # esphome-jsdsolar
 
 
-ESPHome example configuration to monitor and control aJSD 6KHB inverter via rs485
+ESPHome example configuration to monitor and control a JSDSolar 6KHB inverter via rs485
 
 ## Supported devices
 
@@ -66,7 +66,7 @@ The inverter provides +5V and GND on pin 1 and 4 of "hidden"  USB (Data Logger) 
 
 For simplicity you can buy 4pin JST XH connector
 
-Also you can use a cheap DC-DC converter to power the ESP with 3.3V but most oe esp32 boards have 5V input and 3.3V output.
+Also you can use a cheap DC-DC converter to power the ESP with 3.3V but most of esp32 boards have 5V input and 3.3V output.
 
 Finally your results after installing esphome code on the lilygo device will be:
 
@@ -76,7 +76,7 @@ Finally your results after installing esphome code on the lilygo device will be:
 
 ## Installation in home assistant
 
-Use the `eesphome-jsdsolar-6hkbd1l1-eco.yaml` for testing purposes
+Use the `eesphome-jsdsolar-6hkbd1l1-eco.yaml` for testing purposes and finetune as of your needs
 
 ```bash
 # Install esphome addon in home assistant
