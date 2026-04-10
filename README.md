@@ -133,12 +133,14 @@ ota_password: YOUR_OTA_PASSWORD
             Register0 Bit10 - if 0 Sunday is not actie for time control and if 1 Sunday is active for time control 
       
       Register 1 - used to store definition of start time within a active day
+
             Register contains two bytes. One byte is an hour and another is minute of the day
             Example:
               Register1 value: 0x0909 -> 9:09AM
               Register1 value: 0x0F0F -> 15:15 or 3:15PM
       
       Register 2 - used to store definition of end time within a active day
+
             Register contains two bytes. One byte is an hour and another is minute of the day
             Example:
               Register1 value: 0x0909 -> 9:09AM
@@ -153,6 +155,7 @@ ota_password: YOUR_OTA_PASSWORD
       Register 6 - TBD but so far always value 0x01C2 (this maybe reference year for date calculation in "once mode")
       
       Register 7 - used to store definition of active day when in "once active" mode
+      
             Register7 Bit0-4 - day of the month eg. value 0x3 in those bits means 3 day of the month
             Register7 Bit5-8 - month eg. value 0x2 in those bits means February
             Register7 Bit9-Bit14 - year since 2020 but no more than 2025 eg. value 0xA in those bits means 2030 
