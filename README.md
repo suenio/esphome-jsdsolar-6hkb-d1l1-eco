@@ -106,8 +106,9 @@ ota_password: YOUR_OTA_PASSWORD
 
 
 ## Work in progress
+1. There is already more than 200 registers defined but there is another 200 to reverse engineer :) Anubody wants to help
 
-1. ABility to modify time control periods.
+2. ABility to modify time control periods.
 
     From Reverse engineering activities data related to time based configuration periods is stored in 6 blocks with 8 registers per block starting at register 0x2600. Each block contains:
 
