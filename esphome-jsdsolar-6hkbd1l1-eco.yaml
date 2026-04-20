@@ -3,8 +3,8 @@ substitutions:
   device_description: "JSDSolar 6KHB D1/LV ECO Inverter"
   cat1: "[DI]"
   cat2: "[RTD]"
-  cat3: "[P1]"
-  cat4: "[P2]"
+  cat3: "[HPP]"
+  cat4: "[HPVP]"
   tx_pin: GPIO22
   rx_pin: GPIO21
 
@@ -130,8 +130,8 @@ sensor:
   
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: rated_voltage
-    name: "${cat1} Rated Voltage"
+    id: nominal_voltage
+    name: "${cat1} Nominal Voltage"
     entity_category: DIAGNOSTIC
     address: 0x1A44
     register_type: holding
@@ -141,8 +141,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: rated_frequency
-    name: "${cat1} Rated Frequency"
+    id: nominal_frequency
+    name: "${cat1} Nominal Frequency"
     entity_category: DIAGNOSTIC
     address: 0x1A45
     register_type: holding
@@ -152,8 +152,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: rated_power
-    name: "${cat1} Rated Power"
+    id: nominal_active_power
+    name: "${cat1} Nominal Active Power"
     entity_category: DIAGNOSTIC
     address: 0x1A46
     register_type: holding
@@ -315,7 +315,7 @@ sensor:
     entity_category: DIAGNOSTIC
     address: 0x1011
     register_type: holding
-    value_type: U_WORD
+    value_type: S_WORD
     filters: [{ multiply: 0.01 }]
 
   - platform: modbus_controller
@@ -345,7 +345,7 @@ sensor:
     entity_category: DIAGNOSTIC
     address: 0x1015
     register_type: holding
-    value_type: U_WORD
+    value_type: S_WORD
     filters: [{ multiply: 0.01 }]
 
   - platform: modbus_controller
@@ -358,7 +358,7 @@ sensor:
     value_type: U_DWORD
     filters: [{ multiply: 0.1 }]
 
-#  - platform: modbus_controller
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
 #    modbus_controller_id: fast
 #    id: pv3_voltage
 #    name: "${cat2} PV3 Voltage"
@@ -368,17 +368,17 @@ sensor:
 #    value_type: U_WORD
 #    filters: [{ multiply: 0.1 }]
 
-#  - platform: modbus_controller
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
 #    modbus_controller_id: fast
 #    id: pv3_current
 #    name: "${cat2} PV3 Current"
 #    entity_category: DIAGNOSTIC
 #    address: 0x1019
 #    register_type: holding
-#    value_type: U_WORD
+#    value_type: S_WORD
 #    filters: [{ multiply: 0.01 }]
 
-#  - platform: modbus_controller
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
 #    modbus_controller_id: fast
 #    id: pv3_power
 #    name: "${cat2} PV3 Power (MPPT3)"
@@ -388,7 +388,7 @@ sensor:
 #    value_type: U_DWORD
 #    filters: [{ multiply: 0.1 }]
 
-#  - platform: modbus_controller
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
 #    modbus_controller_id: fast
 #    id: pv4_voltage
 #    name: "${cat2} PV4 Voltage"
@@ -398,7 +398,7 @@ sensor:
 #    value_type: U_WORD
 #    filters: [{ multiply: 0.1 }]
 
-#  - platform: modbus_controller
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
 #    modbus_controller_id: fast
 #    id: pv4_current
 #    name: "${cat2} PV4 Current"
@@ -408,7 +408,7 @@ sensor:
 #    value_type: U_WORD
 #    filters: [{ multiply: 0.01 }]
 
-#  - platform: modbus_controller
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
 #    modbus_controller_id: fast
 #    id: pv4_power
 #    name: "${cat2} PV4 Power (MPPT4)"
@@ -418,13 +418,323 @@ sensor:
 #    value_type: U_DWORD
 #    filters: [{ multiply: 0.1 }]
 
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
+#    modbus_controller_id: fast
+#    id: pv5_voltage
+#    name: "${cat2} PV5 Voltage"
+#    entity_category: DIAGNOSTIC
+#    address: 0x1080
+#    register_type: holding
+#    value_type: U_WORD
+#    filters: [{ multiply: 0.1 }]
+
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
+#    modbus_controller_id: fast
+#    id: pv5_current
+#    name: "${cat2} PV5 Current"
+#    entity_category: DIAGNOSTIC
+#    address: 0x1081
+#    register_type: holding
+#    value_type: U_WORD
+#    filters: [{ multiply: 0.01 }]
+
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
+#    modbus_controller_id: fast
+#    id: pv5_power
+#    name: "${cat2} PV5 Power (MPPT5)"
+#    entity_category: DIAGNOSTIC
+#    address: 0x1082
+#    register_type: holding
+#    value_type: U_DWORD
+#    filters: [{ multiply: 0.1 }]
+
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
+#    modbus_controller_id: fast
+#    id: pv6_voltage
+#    name: "${cat2} PV6 Voltage"
+#    entity_category: DIAGNOSTIC
+#    address: 0x1084
+#    register_type: holding
+#    value_type: U_WORD
+#    filters: [{ multiply: 0.1 }]
+
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
+#    modbus_controller_id: fast
+#    id: pv6_current
+#    name: "${cat2} PV6 Current"
+#    entity_category: DIAGNOSTIC
+#    address: 0x1085
+#    register_type: holding
+#    value_type: U_WORD
+#    filters: [{ multiply: 0.01 }]
+
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
+#    modbus_controller_id: fast
+#    id: pv6_power
+#    name: "${cat2} PV6 Power (MPPT6)"
+#    entity_category: DIAGNOSTIC
+#    address: 0x1086
+#    register_type: holding
+#    value_type: U_DWORD
+#    filters: [{ multiply: 0.1 }]
+
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
+#    modbus_controller_id: fast
+#    id: pv7_voltage
+#    name: "${cat2} PV7 Voltage"
+#    entity_category: DIAGNOSTIC
+#    address: 0x1088
+#    register_type: holding
+#    value_type: U_WORD
+#    filters: [{ multiply: 0.1 }]
+
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
+#    modbus_controller_id: fast
+#    id: pv7_current
+#    name: "${cat2} PV7 Current"
+#    entity_category: DIAGNOSTIC
+#    address: 0x1089
+#    register_type: holding
+#    value_type: U_WORD
+#    filters: [{ multiply: 0.01 }]
+
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
+#    modbus_controller_id: fast
+#    id: pv7_power
+#    name: "${cat2} PV7 Power (MPPT7)"
+#    entity_category: DIAGNOSTIC
+#    address: 0x108A
+#    register_type: holding
+#    value_type: U_DWORD
+#    filters: [{ multiply: 0.1 }]
+
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
+#    modbus_controller_id: fast
+#    id: pv8_voltage
+#    name: "${cat2} PV8 Voltage"
+#    entity_category: DIAGNOSTIC
+#    address: 0x108C
+#    register_type: holding
+#    value_type: U_WORD
+#    filters: [{ multiply: 0.1 }]
+
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
+#    modbus_controller_id: fast
+#    id: pv8_current
+#    name: "${cat2} PV8 Current"
+#    entity_category: DIAGNOSTIC
+#    address: 0x108D
+#    register_type: holding
+#    value_type: U_WORD
+#    filters: [{ multiply: 0.01 }]
+
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
+#    modbus_controller_id: fast
+#    id: pv8_power
+#    name: "${cat2} PV8 Power (MPPT8)"
+#    entity_category: DIAGNOSTIC
+#    address: 0x108E
+#    register_type: holding
+#    value_type: U_DWORD
+#    filters: [{ multiply: 0.1 }]
+
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
+#    modbus_controller_id: fast
+#    id: pv9_voltage
+#    name: "${cat2} PV9 Voltage"
+#    entity_category: DIAGNOSTIC
+#    address: 0x1090
+#    register_type: holding
+#    value_type: U_WORD
+#    filters: [{ multiply: 0.1 }]
+
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
+#    modbus_controller_id: fast
+#    id: pv9_current
+#    name: "${cat2} PV9 Current"
+#    entity_category: DIAGNOSTIC
+#    address: 0x1091
+#    register_type: holding
+#    value_type: U_WORD
+#    filters: [{ multiply: 0.01 }]
+
+#  - platform: modbus_controller  #ok - register is here but not used for this inverter due to only 2 MPPTs
+#    modbus_controller_id: fast
+#    id: pv9_power
+#    name: "${cat9} PV6 Power (MPPT9)"
+#    entity_category: DIAGNOSTIC
+#    address: 0x1092
+#    register_type: holding
+#    value_type: U_DWORD
+#    filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller #ok - in JSD file but does not work yet
+  #  modbus_controller_id: fast
+  #  id: pv1_energy_total
+  #  name: "${cat2} PV1 Energy Total"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x10B0
+  #  register_type: holding
+  #  value_type: U_DWORD
+  #  unit_of_measurement: "Wh"
+
+  #- platform: modbus_controller #ok - in JSD file but does not work yet
+  #  modbus_controller_id: fast
+  #  id: pv1_energy_today
+  #  name: "${cat2} PV1 Energy Today"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x10B2
+  #  register_type: holding
+  #  value_type: U_DWORD   
+  #  unit_of_measurement: "Wh"
+
+  #- platform: modbus_controller #ok - in JSD file but does not work yet
+  #  modbus_controller_id: fast
+  #  id: pv2_energy_total
+  #  name: "${cat2} PV2 Energy Total"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x10B4
+  #  register_type: holding
+  #  value_type: U_DWORD
+  #  unit_of_measurement: "Wh"
+
+  #- platform: modbus_controller #ok - in JSD file but does not work yet
+  #  modbus_controller_id: fast
+  #  id: pv2_energy_today
+  #  name: "${cat2} PV2 Energy Today"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x10B6
+  #  register_type: holding
+  #  value_type: U_DWORD   
+  #  unit_of_measurement: "Wh"
+
+#  - platform: modbus_controller
+#    modbus_controller_id: fast
+#    id: pv3_energy_total
+#    name: "${cat2} PV3 Energy Total"
+#    entity_category: DIAGNOSTIC
+#    address: 0x10B8
+#    register_type: holding
+#    value_type: U_DWORD
+#    unit_of_measurement: "Wh"
+#
+#  - platform: modbus_controller
+#    modbus_controller_id: fast
+#    id: pv3_energy_today
+#    name: "${cat2} PV3 Energy Today"
+#    entity_category: DIAGNOSTIC
+#    address: 0x10BA
+#    register_type: holding
+#    value_type: U_DWORD   
+#    unit_of_measurement: "Wh"
+
+#  - platform: modbus_controller
+#    modbus_controller_id: fast
+#    id: pv4_energy_total
+#    name: "${cat2} PV4 Energy Total"
+#    entity_category: DIAGNOSTIC
+#    address: 0x10BC
+#    register_type: holding
+#    value_type: U_DWORD
+#    unit_of_measurement: "Wh"
+#
+#  - platform: modbus_controller
+#    modbus_controller_id: fast
+#    id: pv4_energy_today
+#    name: "${cat2} PV4 Energy Today"
+#    entity_category: DIAGNOSTIC
+#    address: 0x10BE
+#    register_type: holding
+#    value_type: U_DWORD   
+#    unit_of_measurement: "Wh"
+
+#  - platform: modbus_controller
+#    modbus_controller_id: fast
+#    id: pv5_energy_total
+#    name: "${cat2} PV5 Energy Total"
+#    entity_category: DIAGNOSTIC
+#    address: 0x10C0
+#    register_type: holding
+#    value_type: U_DWORD
+#    unit_of_measurement: "Wh"
+#
+#  - platform: modbus_controller
+#    modbus_controller_id: fast
+#    id: pv5_energy_today
+#    name: "${cat2} PV5 Energy Today"
+#    entity_category: DIAGNOSTIC
+#    address: 0x10C2
+#    register_type: holding
+#    value_type: U_DWORD   
+#    unit_of_measurement: "Wh"
+
+#  - platform: modbus_controller
+#    modbus_controller_id: fast
+#    id: pv6_energy_total
+#    name: "${cat2} PV6 Energy Total"
+#    entity_category: DIAGNOSTIC
+#    address: 0x10C4
+#    register_type: holding
+#    value_type: U_DWORD
+#    unit_of_measurement: "Wh"
+#
+#  - platform: modbus_controller
+#    modbus_controller_id: fast
+#    id: pv6_energy_today
+#    name: "${cat2} PV6 Energy Today"
+#    entity_category: DIAGNOSTIC
+#    address: 0x10C6
+#    register_type: holding
+#    value_type: U_DWORD   
+#    unit_of_measurement: "Wh"
+
+#  - platform: modbus_controller
+#    modbus_controller_id: fast
+#    id: pv7_energy_total
+#    name: "${cat2} PV7 Energy Total"
+#    entity_category: DIAGNOSTIC
+#    address: 0x10CB
+#    register_type: holding
+#    value_type: U_DWORD
+#    unit_of_measurement: "Wh"
+#
+#  - platform: modbus_controller
+#    modbus_controller_id: fast
+#    id: pv7_energy_today
+#    name: "${cat2} PV7 Energy Today"
+#    entity_category: DIAGNOSTIC
+#    address: 0x10CA
+#    register_type: holding
+#    value_type: U_DWORD   
+#    unit_of_measurement: "Wh"
+
+#  - platform: modbus_controller
+#    modbus_controller_id: fast
+#    id: pv8_energy_total
+#    name: "${cat2} PV8 Energy Total"
+#    entity_category: DIAGNOSTIC
+#    address: 0x10CC
+#    register_type: holding
+#    value_type: U_DWORD
+#    unit_of_measurement: "Wh"
+#
+#  - platform: modbus_controller
+#    modbus_controller_id: fast
+#    id: pv8_energy_today
+#    name: "${cat2} PV8 Energy Today"
+#    entity_category: DIAGNOSTIC
+#    address: 0x10CE
+#    register_type: holding
+#    value_type: U_DWORD   
+#    unit_of_measurement: "Wh"
+
 # =========================
 # 🌡 SYSTEM
 # =========================
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: inverter_temperature
-    name: "${cat2} Inverter Temperature"
+    id: inverter_inner_temperature
+    name: "${cat2} Inverter Inner Temperature"
     entity_category: DIAGNOSTIC
     address: 0x101C
     register_type: holding
@@ -469,8 +779,8 @@ sensor:
     
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: active_power
-    name: "${cat2} Active Power"
+    id: grid_total_active_power
+    name: "${cat2} Grid total Active Power"
     entity_category: DIAGNOSTIC
     address: 0x1037
     register_type: holding
@@ -480,8 +790,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: reactive_power
-    name: "${cat2} Reactive Power"
+    id: grid_total_reactive_power
+    name: "${cat2} Grid total Reactive Power"
     entity_category: DIAGNOSTIC
     address: 0x1039
     register_type: holding
@@ -491,8 +801,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: today_peak_power
-    name: "${cat2} Today Peak Power"
+    id: pv_today_peak_power
+    name: "${cat2} PV Today Peak Power"
     entity_category: DIAGNOSTIC
     address: 0x103B
     register_type: holding
@@ -512,8 +822,30 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: phase_r_watt_of_grid
-    name: "${cat2} Phase R watt of grid"
+    id: pv_total_input_power
+    name: "${cat2} PV Total Input Power"
+    entity_category: DIAGNOSTIC
+    address: 0x1048
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: W
+    filters: [{ multiply: 0.1 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: decimals_of_total_energy
+    name: "${cat2} Decimals of Total Energy"
+    entity_category: DIAGNOSTIC
+    address: 0x104C
+    register_type: holding
+    value_type: U_WORD
+    unit_of_measurement: Wh
+    filters: [{ multiply: 0.1 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: l1_watt_of_grid
+    name: "${cat2} L1 watt of grid"
     entity_category: DIAGNOSTIC
     address: 0x1300
     register_type: holding
@@ -523,8 +855,8 @@ sensor:
   
 #  - platform: modbus_controller
 #    modbus_controller_id: fast
-#    id: phase_s_watt_of_grid
-#    name: "${cat2} Phase S watt of grid"
+#    id: l2_watt_of_grid
+#    name: "${cat2} L2 watt of grid"
 #    entity_category: DIAGNOSTIC
 #    address: 0x1302
 #    register_type: holding
@@ -534,8 +866,8 @@ sensor:
   
 #  - platform: modbus_controller
 #    modbus_controller_id: fast
-#    id: phase_t_watt_of_grid
-#    name: "${cat2} Phase T watt of grid"
+#    id: l3_watt_of_grid
+#    name: "${cat2} L3 watt of grid"
 #    entity_category: DIAGNOSTIC
 #    address: 0x1304
 #    register_type: holding
@@ -546,7 +878,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: fast
     id: accumulated_energy_of_positive
-    name: "${cat2} Accumulated Energy Of Positie"
+    name: "${cat2} Accumulated Energy Of Positie/Import"
     entity_category: DIAGNOSTIC
     address: 0x1306
     register_type: holding
@@ -557,7 +889,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: fast
     id: accumulated_energy_of_negatie
-    name: "${cat2} Accumulated Energy Of Negative"
+    name: "${cat2} Accumulated Energy Of Negative/Export"
     entity_category: DIAGNOSTIC
     address: 0x1308
     register_type: holding
@@ -567,8 +899,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: phase_r_watt_of_load
-    name: "${cat2} Phase R watt of load"
+    id: l1_watt_of_load
+    name: "${cat2} L1 watt of load"
     entity_category: DIAGNOSTIC
     address: 0x130A
     register_type: holding
@@ -578,8 +910,8 @@ sensor:
   
 #  - platform: modbus_controller
 #    modbus_controller_id: fast
-#    id: phase_s_watt_of_load
-#    name: "${cat2} Phase S watt of load"
+#    id: l2_watt_of_load
+#    name: "${cat2} L2 watt of load"
 #    entity_category: DIAGNOSTIC
 #    address: 0x130C
 #    register_type: holding
@@ -589,8 +921,8 @@ sensor:
 
 #  - platform: modbus_controller
 #    modbus_controller_id: fast
-#    id: phase_t_watt_of_load
-#    name: "${cat2} Phase T watt of load"
+#    id: l3_watt_of_load
+#    name: "${cat2} L3 watt of load"
 #    entity_category: DIAGNOSTIC
 #    address: 0x130E
 #    register_type: holding
@@ -786,12 +1118,12 @@ sensor:
     filters: [{ multiply: 0.01 }]
   
 # =========================
-# ⚡ ENERGY - EPS
+# ⚡ ENERGY - Backup
 # =========================
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: phase_r_voltage_of_eps
-    name: "${cat2} Phase R voltage of EPS"
+    id: l1_voltage_of_backup
+    name: "${cat2} L1 voltage of Backup"
     entity_category: DIAGNOSTIC
     address: 0x1350
     register_type: holding
@@ -801,8 +1133,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: phase_r_current_of_eps
-    name: "${cat2} Phase R current of EPS"
+    id: l1_current_of_backup
+    name: "${cat2} L1 current of Backup"
     entity_category: DIAGNOSTIC
     address: 0x1351
     register_type: holding
@@ -812,8 +1144,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: phase_r_watt_of_eps
-    name: "${cat2} Phase R watt of EPS"
+    id: l1_watt_of_backup
+    name: "${cat2} L1 watt of Backup"
     entity_category: DIAGNOSTIC
     address: 0x1353
     register_type: holding
@@ -823,8 +1155,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: frequency_of_eps
-    name: "${cat2} Frequency of EPS"
+    id: frequency_of_backup
+    name: "${cat2} Frequency of Backup"
     entity_category: DIAGNOSTIC
     address: 0x1355
     register_type: holding
@@ -834,8 +1166,8 @@ sensor:
 
   #- platform: modbus_controller
   #  modbus_controller_id: fast
-  #  id: phase_s_voltage_of_eps
-  #  name: "${cat2} Phase S voltage of EPS"
+  #  id: l2_voltage_of_backup
+  #  name: "${cat2} L2 voltage of Beckup"
   #  entity_category: DIAGNOSTIC
   #  address: 0x1356
   #  register_type: holding
@@ -845,8 +1177,8 @@ sensor:
 
   #- platform: modbus_controller
   #  modbus_controller_id: fast
-  #  id: phase_s_current_of_eps
-  #  name: "${cat2} Phase S current of EPS"
+  #  id: l2_current_of_backup
+  #  name: "${cat2} L2 current of Backup"
   #  entity_category: DIAGNOSTIC
   #  address: 0x1357
   #  register_type: holding
@@ -856,8 +1188,8 @@ sensor:
 
   #- platform: modbus_controller
   #  modbus_controller_id: fast
-  #  id: phase_s_watt_of_eps
-  #  name: "${cat2} Phase S watt of EPS"
+  #  id: l2_watt_of_backup
+  #  name: "${cat2} L2 watt of Backup"
   #  entity_category: DIAGNOSTIC
   #  address: 0x1359
   #  register_type: holding
@@ -867,8 +1199,8 @@ sensor:
 
   #- platform: modbus_controller
   #  modbus_controller_id: fast
-  #  id: phase_t_voltage_of_eps
-  #  name: "${cat2} Phase T voltage of EPS"
+  #  id: l3_voltage_of_backup
+  #  name: "${cat2} L3 voltage of Backup"
   #  entity_category: DIAGNOSTIC
   #  address: 0x135B
   #  register_type: holding
@@ -878,8 +1210,8 @@ sensor:
 
   #- platform: modbus_controller
   #  modbus_controller_id: fast
-  #  id: phase_t_current_of_eps
-  #  name: "${cat2} Phase T current of EPS"
+  #  id: l3_current_of_backup
+  #  name: "${cat2} L3 current of Backup"
   #  entity_category: DIAGNOSTIC
   #  address: 0x135C
   #  register_type: holding
@@ -889,8 +1221,8 @@ sensor:
 
   #- platform: modbus_controller
   #  modbus_controller_id: fast
-  #  id: phase_t_watt_of_eps
-  #  name: "${cat2} Phase T watt of EPS"
+  #  id: l3_watt_of_backup
+  #  name: "${cat2} L3 watt of Backup"
   #  entity_category: DIAGNOSTIC
   #  address: 0x135E
   #  register_type: holding
@@ -900,8 +1232,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: daily_energy_of_eps
-    name: "${cat2} Daily Energy of EPS"
+    id: today_energy_to_backup
+    name: "${cat2} Today Energy of Backup"
     entity_category: DIAGNOSTIC
     address: 0x1360
     register_type: holding
@@ -911,8 +1243,8 @@ sensor:
     
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: accummulated_energy_to_eps
-    name: "${cat2} Accumulated energy to EPS"
+    id: accummulated_energy_to_backup
+    name: "${cat2} Accumulated Energy to Backup"
     entity_category: DIAGNOSTIC
     address: 0x1362
     register_type: holding
@@ -921,12 +1253,514 @@ sensor:
     filters: [{ multiply: 10 } ]
 
 # =========================
+# ⚡ ENERGY - Generator
+# =========================
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: l1_voltage_of_generator
+    name: "${cat2} L1 voltage of Generator"
+    entity_category: DIAGNOSTIC
+    address: 0x136A
+    register_type: holding
+    value_type: U_WORD
+    unit_of_measurement: V
+    filters: [{ multiply: 0.1 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: l1_current_of_generator
+    name: "${cat2} L1 current of Generator"
+    entity_category: DIAGNOSTIC
+    address: 0x136B
+    register_type: holding
+    value_type: S_DWORD
+    unit_of_measurement: A
+    filters: [{ multiply: 0.01 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: l1_watt_of_generator
+    name: "${cat2} L1 watt of Generator"
+    entity_category: DIAGNOSTIC
+    address: 0x136D
+    register_type: holding
+    value_type: S_DWORD
+    unit_of_measurement: W
+    filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: l2_voltage_of_generator
+  #  name: "${cat2} L2 voltage of Generator"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x136F
+  #  register_type: holding
+  #  value_type: U_WORD
+  #  unit_of_measurement: V
+  #  filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: l2_current_of_generator
+  #  name: "${cat2} L2 current of Generator"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1370
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: A
+  #  filters: [{ multiply: 0.01 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: l2_watt_of_generator
+  #  name: "${cat2} L2 watt of Generator"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1372
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: W
+  #  filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: l3_voltage_of_generator
+  #  name: "${cat2} L3 voltage of Generator"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1374
+  #  register_type: holding
+  #  value_type: U_WORD
+  #  unit_of_measurement: V
+  #  filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: l3_current_of_generator
+  #  name: "${cat2} L3 current of Generator"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1375
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: A
+  #  filters: [{ multiply: 0.01 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: l3_watt_of_generator
+  #  name: "${cat2} L3 watt of Generator"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1377
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: W
+  #  filters: [{ multiply: 0.1 }]
+
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: frequency_of_generator
+    name: "${cat2} Frequency of Generator"
+    entity_category: DIAGNOSTIC
+    address: 0x1379
+    register_type: holding
+    value_type: U_WORD
+    unit_of_measurement: Hz
+    filters: [{ multiply: 0.01 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: generator_today_energy
+    name: "${cat2} Generator Today Energy"
+    entity_category: DIAGNOSTIC
+    address: 0x137A
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: Wh
+    filters: [{ multiply: 10 }]
+    
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: generator_total_energy
+    name: "${cat2} Generator Total Energy"
+    entity_category: DIAGNOSTIC
+    address: 0x137C
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: Wh
+    filters: [{ multiply: 10 } ]
+
+# =========================
+# ⚡ ENERGY - Sums of energy
+# =========================
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: phase_l1_watt_of_grid_sum
+    name: "${cat2} Phase L1 watt of grid sum"
+    entity_category: DIAGNOSTIC
+    address: 0x13A0
+    register_type: holding
+    value_type: S_DWORD
+    unit_of_measurement: W
+    filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: phase_l2_watt_of_grid_sum
+  #  name: "${cat2} Phase L2 watt of grid sum"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x13A2
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: W
+  #  filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: phase_l3_watt_of_grid_sum
+  #  name: "${cat2} Phase L3 watt of grid sum"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x13A4
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: W
+  #  filters: [{ multiply: 0.1 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: phase_l1_watt_of_load_sum
+    name: "${cat2} Phase L1 watt of load sum"
+    entity_category: DIAGNOSTIC
+    address: 0x13A6
+    register_type: holding
+    value_type: S_DWORD
+    unit_of_measurement: W
+    filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: phase_l2_watt_of_load_sum
+  #  name: "${cat2} Phase L2 watt of load sum"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x13A8
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: W
+  #  filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: phase_l3_watt_of_grid_sum
+  #  name: "${cat2} Phase L3 watt of load sum"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x13AA
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: W
+  #  filters: [{ multiply: 0.1 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: daily_energy_of_load_sum
+    name: "${cat2} Daily Energy of Load Sum"
+    entity_category: DIAGNOSTIC
+    address: 0x13AC
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: kWh
+    filters: [{ multiply: 0.01 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: monthly_energy_of_load_sum
+    name: "${cat2} Monthly Energy of Load Sum"
+    entity_category: DIAGNOSTIC
+    address: 0x13AE
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: kWh
+    filters: [{ multiply: 0.01 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: accumulated_energy_of_load_sum
+    name: "${cat2} Accumulated Energy of Load Sum"
+    entity_category: DIAGNOSTIC
+    address: 0x13B2
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: kWh
+    filters: [{ multiply: 0.01 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: phase_l1_watt_sum_of_backup
+    name: "${cat2} Phase L1 watt sum of Backup"
+    entity_category: DIAGNOSTIC
+    address: 0x13B4
+    register_type: holding
+    value_type: S_DWORD
+    unit_of_measurement: W
+    filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: phase_l2_watt_sum_of_backup
+  #  name: "${cat2} Phase L2 watt sum of Backup"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x13B6
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: W
+  #  filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: phase_l3_watt_sum_of_backup
+  #  name: "${cat2} Phase L3 watt sum of Backup"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x13B8
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: W
+  #  filters: [{ multiply: 0.1 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: phase_l1_apparent_power_sum_of_backup
+    name: "${cat2} Phase L1 apparent power sum of Backup"
+    entity_category: DIAGNOSTIC
+    address: 0x13BA
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: VA
+    filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: phase_l2_apparent_power_sum_of_backup
+  #  name: "${cat2} Phase L2 waapparent powertt sum of Backup"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x13BC
+  #  register_type: holding
+  #  value_type: U_DWORD
+  #  unit_of_measurement: VA
+  #  filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: phase_l3_apparent_power_sum_of_backup
+  #  name: "${cat2} Phase L3 apparent power sum of Backup"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x13BE
+  #  register_type: holding
+  #  value_type: U_DWORD
+  #  unit_of_measurement: VA
+  #  filters: [{ multiply: 0.1 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: daily_support_energy_sum_to_backup
+    name: "${cat2} Daily Support Energy sum to Backup"
+    entity_category: DIAGNOSTIC
+    address: 0x13C0
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: kWh
+    filters: [{ multiply: 0.01 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: accumulated_support_energy_sum_to_backup
+    name: "${cat2} Accumulated Support Energy sum to Backup"
+    entity_category: DIAGNOSTIC
+    address: 0x13C2
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: kWh
+    filters: [{ multiply: 0.01 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: phase_l1_watt_sum_of_generator
+    name: "${cat2} Phase L1 watt sum of Generator"
+    entity_category: DIAGNOSTIC
+    address: 0x13C4
+    register_type: holding
+    value_type: S_DWORD
+    unit_of_measurement: W
+    filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: phase_l2_watt_sum_of_generator
+  #  name: "${cat2} Phase L2 watt sum of Generator"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x13C6
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: W
+  #  filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: phase_l3_watt_sum_of_generator
+  #  name: "${cat2} Phase L3 watt sum of Generator"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x13C8
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: W
+  #  filters: [{ multiply: 0.1 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: phase_l1_apparent_power_sum_of_generator
+    name: "${cat2} Phase L1 apparent power sum of Generator"
+    entity_category: DIAGNOSTIC
+    address: 0x13CA
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: VA
+    filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: phase_l2_apparent_power_sum_of_generator
+  #  name: "${cat2} Phase L2 waapparent powertt sum of Generator"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x13CC
+  #  register_type: holding
+  #  value_type: U_DWORD
+  #  unit_of_measurement: VA
+  #  filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: phase_l3_apparent_power_sum_of_generator
+  #  name: "${cat2} Phase L3 apparent power sum of Generator"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x13CE
+  #  register_type: holding
+  #  value_type: U_DWORD
+  #  unit_of_measurement: VA
+  #  filters: [{ multiply: 0.1 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: generator_today_energy_sum
+    name: "${cat2} Generator Today Energy sum"
+    entity_category: DIAGNOSTIC
+    address: 0x13D0
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: kWh
+    filters: [{ multiply: 0.01 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: generator_total_energy_sum
+    name: "${cat2} Generator Total Energy sum"
+    entity_category: DIAGNOSTIC
+    address: 0x13D2
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: kWh
+    filters: [{ multiply: 0.01 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: pvi_daily_generating_energy_sum
+    name: "${cat2} PVI Daily Generating Energy sum"
+    entity_category: DIAGNOSTIC
+    address: 0x13D8
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: kWh
+    
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: pvi_accumulated_energy_sum
+    name: "${cat2} PVI accumulated Energy sum"
+    entity_category: DIAGNOSTIC
+    address: 0x13DA
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: kWh
+   
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: totally_input_dc_watt_sum
+    name: "${cat2} Totally Input DC watt sum"
+    entity_category: DIAGNOSTIC
+    address: 0x13DC
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: W
+    filters: [{ multiply: 0.1 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: battery_power_sum
+    name: "${cat2} Battery Power sum"
+    entity_category: DIAGNOSTIC
+    address: 0x13DE
+    register_type: holding
+    value_type: S_DWORD
+    unit_of_measurement: W
+    filters: [{ multiply: 0.1 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: battery_daily_charge_energy
+    name: "${cat2} Battery Daily Charge Energy"
+    entity_category: DIAGNOSTIC
+    address: 0x13E0
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: kWh
+    filters: [{ multiply: 0.01 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: battery_accumulated_charge_energy
+    name: "${cat2} Battery Accumulated Charge Energy"
+    entity_category: DIAGNOSTIC
+    address: 0x13E2
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: kWh
+    filters: [{ multiply: 0.01 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: battery_daily_discharge_energy
+    name: "${cat2} Battery Daily DisCharge Energy"
+    entity_category: DIAGNOSTIC
+    address: 0x13E4
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: kWh
+    filters: [{ multiply: 0.01 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: battery_accumulated_discharge_energy
+    name: "${cat2} Battery Accumulated DisCharge Energy"
+    entity_category: DIAGNOSTIC
+    address: 0x13E6
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: kWh
+    filters: [{ multiply: 0.01 }]
+
+# =========================
 # 🔋 BATTERY
 # =========================
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: battery_soc
-    name: "${cat2} Battery SOC"
+    id: battery_1_soc
+    name: "${cat2} Battery 1 SOC"
     entity_category: DIAGNOSTIC
     address: 0x2000
     register_type: holding
@@ -935,8 +1769,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: battery_temperature
-    name: "${cat2}} Battery Temperature"
+    id: battery_1_temperature
+    name: "${cat2} Battery 1 Temperature"
     entity_category: DIAGNOSTIC
     address: 0x2001
     register_type: holding
@@ -945,8 +1779,8 @@ sensor:
    
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: battery_voltage
-    name: "${cat2} Battery Voltage"
+    id: battery_1_voltage
+    name: "${cat2} Battery 1 Voltage"
     entity_category: DIAGNOSTIC
     address: 0x2006
     register_type: holding
@@ -956,8 +1790,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: battery_current
-    name: "${cat2} Battery Current"
+    id: battery_1_current
+    name: "${cat2} Battery 1 Current"
     entity_category: DIAGNOSTIC
     address: 0x2007
     register_type: holding
@@ -967,8 +1801,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: battery_power
-    name: "${cat2} Battery Power"
+    id: battery_1_power
+    name: "${cat2} Battery 1 Power"
     entity_category: DIAGNOSTIC
     address: 0x2009
     register_type: holding
@@ -978,8 +1812,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: battery_daily_charge_energy
-    name: "${cat2} Battery Daily Charge Energy"
+    id: battery_1_today_charge_energy
+    name: "${cat2} Battery 1Today Charge Energy"
     entity_category: DIAGNOSTIC
     address: 0x200B
     register_type: holding
@@ -989,8 +1823,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: battery_accumulated_charge_energy
-    name: "${cat2} Battery Accumulated Charge Energy"
+    id: battery_1_accumulated_charge_energy
+    name: "${cat2} Battery 1 Accumulated Charge Energy"
     entity_category: DIAGNOSTIC
     address: 0x200D
     register_type: holding
@@ -1000,8 +1834,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: battery_daily_discharge_energy
-    name: "${cat2} Battery Daily Discharge Energy"
+    id: battery_1_today_discharge_energy
+    name: "${cat2} Battery 1 Today Discharge Energy"
     entity_category: DIAGNOSTIC
     address: 0x200F
     register_type: holding
@@ -1011,8 +1845,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: battery_accumulated_discharge_energy
-    name: "${cat2} Battery Accumulated Discharge Energy"
+    id: battery_1_accumulated_discharge_energy
+    name: "${cat2} Battery 1 Accumulated Discharge Energy"
     entity_category: DIAGNOSTIC
     address: 0x2011
     register_type: holding
@@ -1020,35 +1854,262 @@ sensor:
     unit_of_measurement: Wh
     filters: [{ multiply: 10 }]
 
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: battery_1_average_cell_temperature
+    name: "${cat2} Battery 1 Average Cell Temperature"
+    entity_category: DIAGNOSTIC
+    address: 0x201B
+    register_type: holding
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    
   #- platform: modbus_controller
   #  modbus_controller_id: fast
-  #  id: warning_information
-  #  name: "${cat2} Warning information"
+  #  id: battery_2_aoc
+  #  name: "${cat2} Battery 2 SOC"
   #  entity_category: DIAGNOSTIC
-  #  address: 0x2013
+  #  address: 0x2200
   #  register_type: holding
   #  value_type: U_WORD
+  #  unit_of_measurement: "%"
 
   #- platform: modbus_controller
   #  modbus_controller_id: fast
-  #  id: fault_information
-  #  name: "${cat2} Fault information"
+  #  id: battery_2_temperature
+  #  name: "${cat2} Battery 2 Temperature"
   #  entity_category: DIAGNOSTIC
-  #  address: 0x101E
+  #  address: 0x2201
+  #  register_type: holding
+  #  value_type: S_WORD
+  #  unit_of_measurement: "°C"
+   
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: battery_2_voltage
+  #  name: "${cat2} Battery 2 Voltage"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x2206
+  #  register_type: holding
+  #  value_type: U_WORD
+  #  unit_of_measurement: V
+  #  filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: battery_2_current
+  #  name: "${cat2} Battery 2 Current"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x2207
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: A
+  #  filters: [{ multiply: 0.01 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: battery_2_power
+  #  name: "${cat2} Battery 2 Power"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x2209
   #  register_type: holding
   #  value_type: U_DWORD
-    
+  #  unit_of_measurement: W
+  #  filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: battery_2_today_charge_energy
+  #  name: "${cat2} Battery 2 Today Charge Energy"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x220B
+  #  register_type: holding
+  #  value_type: U_DWORD
+  #  unit_of_measurement: Wh
+  #  filters: [{ multiply: 10 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: battery_2_accumulated_charge_energy
+  #  name: "${cat2} Battery 2 Accumulated Charge Energy"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x220D
+  #  register_type: holding
+  #  value_type: U_DWORD
+  #  unit_of_measurement: Wh
+  #  filters: [{ multiply: 10 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: battery_2_today_discharge_energy
+  #  name: "${cat2} Battery 2 Today Discharge Energy"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x220F
+  #  register_type: holding
+  #  value_type: U_DWORD
+  #  unit_of_measurement: Wh
+  #  filters: [{ multiply: 10 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: battery_2_accumulated_discharge_energy
+  #  name: "${cat2} Battery 2 Accumulated Discharge Energy"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x2211
+  #  register_type: holding
+  #  value_type: U_DWORD
+  #  unit_of_measurement: Wh
+  #  filters: [{ multiply: 10 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: battery_2_average_cell_temperature
+  #  name: "${cat2} Battery 2 Average Cell Temperature"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x221B
+  #  register_type: holding
+  #  value_type: S_WORD
+  #  unit_of_measurement: "°C"  
 
 text_sensor:
 # =========================
 # 🌡 SYSTEM
 # =========================
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: system_work_status
+    name: "${cat2} System Work Status"
+    entity_category: DIAGNOSTIC
+    address: 0x104A
+    register_type: holding
+    raw_encode: HEXBYTES
+    lambda: |-
+      std::string values = "";
+      uint16_t mask = modbus_controller::word_from_hex_str(x, 0);
+      uint16_t tmpMask = mask & 0b111;
+      switch(tmpMask) {
+        case 0b000:
+          values.append("Power On");
+          break;
+        case 0b001:
+          values.append("Standby");
+          break;
+        case 0b011:
+          values.append("On Grid");
+          break;
+        case 0b100:
+          values.append("Off Grid");
+          break;
+      }
+      values.append("; ");
+            
+      tmpMask = mask & 0b1000;
+      switch(tmpMask) {
+        case 0b0000:
+          values.append("Backup R-Off");
+          break;
+        case 0b1000:
+          values.append("Backup R-On");
+          break;        
+      }
+      values.append("; ");
+            
+      tmpMask = mask & 0b110000;
+      switch(tmpMask) {
+        case 0b000000:
+          values.append("Battery Reserved");
+          break;
+        case 0b010000:
+          values.append("Battery Charging");
+          break;    
+        case 0b100000:
+          values.append("Battery DisCharging");
+          break;
+        case 0b110000:
+          values.append("Battery Full charge");
+          break;     
+      }
+      values.append("; ");
+      
+      tmpMask = mask & 0b1000000;
+      switch(tmpMask) {
+        case 0b0000000:
+          values.append("PV Normal");
+          break;
+        case 0b1000000:
+          values.append("PV Failure");
+          break;        
+      }
+      values.append("; ");
+      
+      tmpMask = mask & 0b10000000;
+      switch(tmpMask) {
+        case 0b00000000:
+          values.append("Grid Normal");
+          break;
+        case 0b10000000:
+          values.append("Grid Failure");
+          break;        
+      }
+      values.append("; ");
+
+      tmpMask = mask & 0b11000000000;
+      switch(tmpMask) {
+        case 0b00000000000:
+          values.append("GEN - Off");
+          break;
+        case 0b01000000000:
+          values.append("GEN - Generator");
+          break;    
+        case 0b10000000000:
+          values.append("GEN - Smart load");
+          break;
+        case 0b11000000000:
+          values.append("GEN - Inverter");
+          break;     
+      }
+      values.append("; ");
+
+      tmpMask = mask & 0b100000000000;
+      switch(tmpMask) {
+        case 0b000000000000:
+          values.append("Generator R-Off");
+          break;
+        case 0b100000000000:
+          values.append("Generator R-On");
+          break;        
+      }
+      values.append("; ");
+
+      return values;
+
   - platform: modbus_controller   #ok
     modbus_controller_id: fast
     id: device_model
     name: "${cat1} Device Model"
     entity_category: DIAGNOSTIC
     address: 0x1A00 
+    register_type: holding
+    register_count: 8
+    raw_encode: HEXBYTES
+    response_size: 16
+    lambda: |-
+      int len = x.length();
+      std::string newString;
+      for(int i=0; i< len; i+=2)
+      {
+          std::string byte = x.substr(i,2);
+          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+          newString.push_back(chr);
+      }
+      return newString;
+
+  - platform: modbus_controller   #ok
+    modbus_controller_id: fast
+    id: device_model_extended
+    name: "${cat1} Device Model Extended"
+    entity_category: DIAGNOSTIC
+    address: 0x1B10 
     register_type: holding
     register_count: 8
     raw_encode: HEXBYTES
@@ -1084,8 +2145,29 @@ text_sensor:
           newString.push_back(chr);
       }
       return newString;
-  
+
   - platform: modbus_controller   #ok
+    modbus_controller_id: fast
+    id: device_serial_number_extended
+    name: "${cat1} Device Serial Number Extended"
+    entity_category: DIAGNOSTIC
+    address: 0x1B20
+    register_type: holding
+    register_count: 8
+    raw_encode: HEXBYTES
+    response_size: 16
+    lambda: |-
+      int len = x.length();
+      std::string newString;
+      for(int i=0; i< len; i+=2)
+      {
+          std::string byte = x.substr(i,2);
+          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+          newString.push_back(chr);
+      }
+      return newString;
+  
+  - platform: modbus_controller   #ok but not documented in file for JSDSolar
     modbus_controller_id: fast
     id: modbus_protocol_version
     name: "${cat1} Modbus Protocol Version"
@@ -1102,8 +2184,8 @@ text_sensor:
 
   - platform: modbus_controller  #ok 
     modbus_controller_id: fast
-    id: master_software_version
-    name: "${cat1} Master Software Version"
+    id: master_firmware_version
+    name: "${cat1} Master Firmware Version"
     entity_category: DIAGNOSTIC
     address: 0x1A1C
     register_type: holding
@@ -1121,10 +2203,10 @@ text_sensor:
       }
       return newString;    
   
-  - platform: modbus_controller  ##ok
+  - platform: modbus_controller  ##ok but not documented in file for JSDSolar
     modbus_controller_id: fast
-    id: master_software_build_date
-    name: "${cat1} Master Software Build Date"
+    id: master_firmware_build_date
+    name: "${cat1} Master Firmware Build Date"
     entity_category: DIAGNOSTIC
     address: 0x1A23
     register_type: holding
@@ -1164,7 +2246,7 @@ text_sensor:
       }
       return newString;    
   
-  - platform: modbus_controller  ##ok
+  - platform: modbus_controller  ##ok but not documented in file for JSDSolar
     modbus_controller_id: fast
     id: slave_firmware_build_date
     name: "${cat1} Slave Firmware Build Date"
@@ -1198,6 +2280,7 @@ text_sensor:
       uint16_t value = modbus_controller::word_from_hex_str(x, 0);
       switch(value) {
         case 1: return {"Single phase (P1)"};
+        case 2: return {"Split phase"};
         case 3: return {"Three phase (P3)"};
         default: {
           std::string newString = "Unknown";
@@ -1207,26 +2290,51 @@ text_sensor:
         }
       }
 
-  #- platform: modbus_controller  ## does not work - cant read this adress -maybe as this is 4.19 vs 4.21 protocol version
-  #  modbus_controller_id: fast
-  #  id: ems_firmware_version
-  #  name: "${cat1} EMS Firmware Version"
-  #  entity_category: DIAGNOSTIC
-  #  address: 0x1A60
-  #  register_type: holding
-  #  register_count: 3
-  #  raw_encode: HEXBYTES
-  #  response_size: 6
-  #  lambda: |-
-  #    int len = x.length();
-  #    std::string newString;
-  #    for(int i=0; i< len; i+=2)
-  #    {
-  #        std::string byte = x.substr(i,2);
-  #        char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
-  #        newString.push_back(chr);
-  #    }      
-  #    return newString;    
+  - platform: modbus_controller  ##ok
+    modbus_controller_id: fast
+    id: production_type
+    name: "${cat1} Production Type"
+    entity_category: DIAGNOSTIC
+    address: 0x1A48
+    register_type: holding
+    raw_encode: HEXBYTES
+    lambda: |-
+      uint16_t value = modbus_controller::word_from_hex_str(x, 0);
+      switch(value) {
+        case 0: return {"On Grid"};
+        case 1: return {"AC couple without GEN (LV battery)"};
+        case 2: return {"Hybrid without GEN (LV battery)"};
+        case 3: return {"Hybrid with GEN (LV battery)"};
+        case 4: return {"AC couple with GEN (LV battery)"};
+        case 5: return {"Hybrid (HV battery)"};
+        default: {
+          std::string newString = "Unknown";
+          newString += " -> ";
+          newString += x;
+          return newString;
+        }
+      }
+
+  - platform: modbus_controller  ## does not work - cant read this adress -maybe as this is 4.19 vs 4.21 protocol version
+    modbus_controller_id: fast
+    id: ems_firmware_version
+    name: "${cat1} EMS Firmware Version"
+    entity_category: DIAGNOSTIC
+    address: 0x1A60
+    register_type: holding
+    register_count: 3
+    raw_encode: HEXBYTES
+    response_size: 6
+    lambda: |-
+      int len = x.length();
+      std::string newString;
+      for(int i=0; i< len; i+=2)
+      {
+          std::string byte = x.substr(i,2);
+          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+          newString.push_back(chr);
+      }      
+      return newString;    
 
   #- platform: modbus_controller  ## does not work - cant read this adress -maybe as this is 4.19 vs 4.21 protocol version
   #  modbus_controller_id: fast
@@ -1321,52 +2429,78 @@ text_sensor:
 # =========================
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: fault_information
-    name: "${cat2} Fault Information"
+    id: error_code_1
+    name: "${cat2} Error Code 1"
     entity_category: DIAGNOSTIC
     address: 0x101E
     register_type: holding
-    register_count: 2
     raw_encode: HEXBYTES
     lambda: |-
-      static const uint8_t WARNINGS_SIZE = 32;
+      static const uint8_t WARNINGS_SIZE = 16;
       static const char *const WARNINGS[WARNINGS_SIZE] = {
-          "Grid AC over voltage",                                        // 0000 0000 0000 0000 0000 0000 0000 0001 (1)
-          "Grid AC under voltage",                                       // 0000 0000 0000 0000 0000 0000 0000 0010 (2)
-          "Grid AC absent",                                              // 0000 0000 0000 0000 0000 0000 0000 0100 (3)
-          "Grid AC over frequency",                                      // 0000 0000 0000 0000 0000 0000 0000 1000 (4)
-          "Grid AC under frequency",                                     // 0000 0000 0000 0000 0000 0000 0001 0000 (5)
-          "PV DC over voltage",                                          // 0000 0000 0000 0000 0000 0000 0010 0000 (6)
-          "PV insulation abnormal",                                      // 0000 0000 0000 0000 0000 0000 0100 0000 (7)
-          "Leakage current abnormal",                                    // 0000 0000 0000 0000 0000 0000 1000 0000 (8)
-          "Inverter in power limit state",                               // 0000 0000 0000 0000 0000 0001 0000 0000 (9)
-          "Control power low",                                           // 0000 0000 0000 0000 0000 0010 0000 0000 (10)
-          "PV string abnormal",                                          // 0000 0000 0000 0000 0000 0100 0000 0000 (11)
-          "PV DC under voltage",                                         // 0000 0000 0000 0000 0000 1000 0000 0000 (12)
-          "PV irradiation weak",                                         // 0000 0000 0000 0000 0001 0000 0000 0000 (13)
-          "Grid abnormal",                                               // 0000 0000 0000 0000 0010 0000 0000 0000 (14)
-          "Arc fault detection",                                         // 0000 0000 0000 0000 0100 0000 0000 0000 (15)
-          "AC moving average voltage  high",                             // 0000 0000 0000 0000 1000 0000 0000 0000 (16)
-          "Output DC over current",                                      // 0000 0000 0000 0001 0000 0000 0000 0000 (17)
-          "Inverrter relay abnormal",                                    // 0000 0000 0000 0010 0000 0000 0000 0000 (18)
-          "Remote off",                                                  // 0000 0000 0000 0100 0000 0000 0000 0000 (19)
-          "Inverter over temperature",                                   // 0000 0000 0000 1000 0000 0000 0000 0000 (20)
-          "Leakage current HCT abnormal",                                // 0000 0000 0001 0000 0000 0000 0000 0000 (21)
-          "PV string reverse",                                           // 0000 0000 0010 0000 0000 0000 0000 0000 (22)
-          "System type error",                                           // 0000 0000 0100 0000 0000 0000 0000 0000 (23)
-          "Fan lock",                                                    // 0000 0000 1000 0000 0000 0000 0000 0000 (24)
-          "Bus under voltage",                                           // 0000 0001 0000 0000 0000 0000 0000 0000 (25)
-          "Bus over voltage",                                            // 0000 0010 0000 0000 0000 0000 0000 0000 (26)
-          "Internal communication error",                                // 0000 0100 0000 0000 0000 0000 0000 0000 (27)
-          "Software incompatibility",                                    // 0000 1000 0000 0000 0000 0000 0000 0000 (28)
-          "EEPROM error",                                                // 0001 0000 0000 0000 0000 0000 0000 0000 (29)
-          "Consistant warning",                                          // 0010 0000 0000 0000 0000 0000 0000 0000 (30)
-          "Inverter abnormal",                                           // 0100 0000 0000 0000 0000 0000 0000 0000 (31)
-          "Boost abnormal",                                              // 1000 0000 0000 0000 0000 0000 0000 0000 (32)
+          "Inverter over  dc-bias current",                              // 0000 0000 0000 0001 
+          "Inverrter relay abnormal",                                    // 0000 0000 0000 0010
+          "Remote off",                                                  // 0000 0000 0000 0100 
+          "Inverter over temperature",                                   // 0000 0000 0000 1000
+          "Leakage current HCT (GFCI) abnormal",                         // 0000 0000 0001 0000
+          "PV string reverse",                                           // 0000 0000 0010 0000
+          "System type error",                                           // 0000 0000 0100 0000
+          "Fan abnormal",                                                // 0000 0000 1000 0000 
+          "DC-link unbalanced or under voltage",                         // 0000 0001 0000 0000
+          "DC-link over voltage",                                        // 0000 0010 0000 0000 
+          "Internal communication error",                                // 0000 0100 0000 0000 
+          "Software incompatibility",                                    // 0000 1000 0000 0000
+          "EEPROM error",                                                // 0001 0000 0000 0000 
+          "Data inconsistency",                                          // 0010 0000 0000 0000 
+          "Inverter abnormal",                                           // 0100 0000 0000 0000 
+          "Boost abnormal",                                              // 1000 0000 0000 0000 
       };
       std::string values = "";
-      uint32_t mask = modbus_controller::dword_from_hex_str(x, 0);
-      ESP_LOGI("","Lambda incoming mask value  = %d",mask);
+      uint16_t mask = modbus_controller::word_from_hex_str(x, 0);
+      if (mask) {
+        for (int i = 0; i < WARNINGS_SIZE; i++) {
+          if (mask & (1 << i)) {
+            values.append(WARNINGS[i]);
+            values.append(";");
+          }
+        }
+        if (!values.empty()) {
+          values.pop_back();
+        }
+      }
+      if(values.length() == 0) values.append("No errors");
+      return values;
+  
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: error_code_2
+    name: "${cat2} Error Code 2"
+    entity_category: DIAGNOSTIC
+    address: 0x101F
+    register_type: holding
+    raw_encode: HEXBYTES
+    lambda: |-
+      static const uint8_t WARNINGS_SIZE = 16;
+      static const char *const WARNINGS[WARNINGS_SIZE] = {
+          "Grid AC over voltage",                                        // 0000 0000 0000 0001 (1)
+          "Grid AC under voltage",                                       // 0000 0000 0000 0010 (2)
+          "Grid AC absent",                                              // 0000 0000 0000 0100 (3)
+          "Grid AC over frequency",                                      // 0000 0000 0000 1000 (4)
+          "Grid AC under frequency",                                     // 0000 0000 0001 0000 (5)
+          "PV DC over voltage",                                          // 0000 0000 0010 0000 (6)
+          "PV insulation abnormal",                                      // 0000 0000 0100 0000 (7)
+          "Leakage current abnormal",                                    // 0000 0000 1000 0000 (8)
+          "Inverter in power limit state",                               // 0000 0001 0000 0000 (9)
+          "Internal poewr supply abnormal",                              // 0000 0010 0000 0000 (10)
+          "PV string abnormal",                                          // 0000 0100 0000 0000 (11)
+          "PV DC under voltage",                                         // 0000 1000 0000 0000 (12)
+          "PV irradiation weak",                                         // 0001 0000 0000 0000 (13)
+          "Grid abnormal",                                               // 0010 0000 0000 0000 (14)
+          "ARC fault detection",                                         // 0010 0000 0000 0000 (15)
+          "Grid high average voltage",                                   // 0010 0000 0000 0000 (16)
+      };
+      std::string values = "";
+      uint16_t mask = modbus_controller::word_from_hex_str(x, 0);
       if (mask) {
         for (int i = 0; i < WARNINGS_SIZE; i++) {
           if (mask & (1 << i)) {
@@ -1383,32 +2517,101 @@ text_sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: warning_information
-    name: "${cat2} Warning Information"
+    id: error_code_3
+    name: "${cat2} Error Code 3"
+    entity_category: DIAGNOSTIC
+    address: 0x1020
+    register_type: holding
+    raw_encode: HEXBYTES
+    lambda: |-
+      static const uint8_t WARNINGS_SIZE = 16;
+      static const char *const WARNINGS[WARNINGS_SIZE] = {
+          "RSD (rapid shutdown) abnormal",                               // 0000 0000 0000 0001 (1)
+          "EMS EEPROM fail",                                             // 0000 0000 0000 0010 (2)
+          "PV open warning",                                             // 0000 0000 0000 0100 (3)
+          "PID device abnormal",                                         // 0000 0000 0000 1000 (4)
+          "AFCI lost",                                                   // 0000 0000 0001 0000 (5)
+          "Data logger lost",                                            // 0000 0000 0010 0000 (6)
+          "Meter lost",                                                  // 0000 0000 0100 0000 (7)
+          "Reserved",                                                    // 0000 0000 1000 0000 (8)
+          "Grid N abnormal",                                             // 0000 0001 0000 0000 (9)
+          "Surge Protection Devices (SPD) defective",                    // 0000 0010 0000 0000 (10)
+          "Parallel ID warning",                                         // 0000 0100 0000 0000 (11)
+          "Parallel SYN signal warning",                                 // 0000 1000 0000 0000 (12)
+          "Parallel BAT abnormal",                                       // 0001 0000 0000 0000 (13)
+          "Parallel GRID abnormal",                                      // 0010 0000 0000 0000 (14)
+          "Generator voltage abnormal",                                  // 0010 0000 0000 0000 (15)
+          "Phase Sequence abnormal",                                     // 0010 0000 0000 0000 (16)
+      };
+      std::string values = "";
+      uint16_t mask = modbus_controller::word_from_hex_str(x, 0);
+      if (mask) {
+        for (int i = 0; i < WARNINGS_SIZE; i++) {
+          if (mask & (1 << i)) {
+            values.append(WARNINGS[i]);
+            values.append(";");
+          }
+        }
+        if (!values.empty()) {
+          values.pop_back();
+        }
+      }
+      if(values.length() == 0) values.append("No errors");
+      return values;
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: fuse_open_indicator
+    name: "${cat2} Fuse Open Indicator"
+    entity_category: DIAGNOSTIC
+    address: 0x1034
+    register_type: holding
+    register_count: 2
+    raw_encode: HEXBYTES
+    lambda: |-           
+      std::string values = "";
+      for(int j = 2; j >= 0 ;j -= 2) {
+        uint16_t mask16 = modbus_controller::word_from_hex_str(x, j);
+        for (int i = 0; i < 16; i++) {
+          if (mask16 & (1 << i)) {
+            values.append("1");
+          } else {
+            values.append("0");
+          }
+        }
+        if (!values.empty()) {
+          values.pop_back();
+        }
+      }
+      return values;
+
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: error_code_4
+    name: "${cat2} Error Code 4"
     entity_category: DIAGNOSTIC
     address: 0x2013
     register_type: holding
-    #register_count: 3
     raw_encode: HEXBYTES
-    #response_size: 6
     lambda: |-
       static const uint8_t WARNINGS16_SIZE = 16;
       static const char *const WARNINGS16[WARNINGS16_SIZE] = {
           "Battery absent",                                              // 0000 0000 0000 0000 0000 0000 0000 0001 (1)
           "Battery over volt",                                           // 0000 0000 0000 0000 0000 0000 0000 0010 (2)
           "Battery under volt",                                          // 0000 0000 0000 0000 0000 0000 0000 0100 (3)
-          "Battery discharge over curr",                                 // 0000 0000 0000 0000 0000 0000 0000 1000 (4)
-          "BMS - EMS communication loss",                                // 0000 0000 0000 0000 0000 0000 0001 0000 (5)
-          "EPS over load",                                               // 0000 0000 0000 0000 0000 0000 0010 0000 (6)
-          "DC current abnormal",                                         // 0000 0000 0000 0000 0000 0000 0100 0000 (7)
-          "EPS short",                                                   // 0000 0000 0000 0000 0000 0000 1000 0000 (8)
-          "Neutral fault",                                               // 0000 0000 0000 0000 0000 0001 0000 0000 (9)
-          "Zero fire wire reverse",                                      // 0000 0000 0000 0000 0000 0010 0000 0000 (10)
-          "EPS capacitance decrease",                                    // 0000 0000 0000 0000 0000 0100 0000 0000 (11)
-          "BMS - EMS communication error",                               // 0000 0000 0000 0000 0000 1000 0000 0000 (12)
-          "EMS - MasterDSP communication lost",                          // 0000 0000 0000 0000 0001 0000 0000 0000 (13)
-          "Master DSP - DC/DC DSP communication lost",                   // 0000 0000 0000 0000 0010 0000 0000 0000 (14)
-          "Reserevd",                                                    // 0000 0000 0000 0000 0100 0000 0000 0000 (15)
+          "Battery discharge over current",                              // 0000 0000 0000 0000 0000 0000 0000 1000 (4)
+          "Battery over temperature",                                    // 0000 0000 0000 0000 0000 0000 0001 0000 (5)
+          "Battery under temperature",                                   // 0000 0000 0000 0000 0000 0000 0010 0000 (6)
+          "Neutral live wire reversed",                                  // 0000 0000 0000 0000 0000 0000 0100 0000 (7)
+          "Backup output voltage abnormal",                              // 0000 0000 0000 0000 0000 0000 1000 0000 (8)
+          "Communication error (Inverter-BMS)",                          // 0000 0000 0000 0000 0000 0001 0000 0000 (9)
+          "Internal communication loss(E-M)",                            // 0000 0000 0000 0000 0000 0010 0000 0000 (10)
+          "Internal communication loss(M-D)",                            // 0000 0000 0000 0000 0000 0100 0000 0000 (11)
+          "DCDC abnormal",                                               // 0000 0000 0000 0000 0000 1000 0000 0000 (12)
+          "Backup over dc-bias voltage",                                 // 0000 0000 0000 0000 0001 0000 0000 0000 (13)
+          "Backup short circuit",                                        // 0000 0000 0000 0000 0010 0000 0000 0000 (14)
+          "Backup over load",                                            // 0000 0000 0000 0000 0100 0000 0000 0000 (15)
           "reserved",                                                    // 0000 0000 0000 0000 1000 0000 0000 0000 (16)
       };
       
@@ -1425,10 +2628,53 @@ text_sensor:
           values.pop_back();
         }
       }
-      if(values.length() == 0) values.append("No warnings");
+      if(values.length() == 0) values.append("No errors");
       return values;
 
-
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: error_code_5
+  #  name: "${cat2} Error Code 5"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x2213
+  #  register_type: holding
+  #  raw_encode: HEXBYTES
+  #  lambda: |-
+  #    static const uint8_t WARNINGS16_SIZE = 16;
+  #    static const char *const WARNINGS16[WARNINGS16_SIZE] = {
+  #        "Battery 2 absent",                                            // 0000 0000 0000 0000 0000 0000 0000 0001 (1)
+  #        "Battery 2 over volt",                                         // 0000 0000 0000 0000 0000 0000 0000 0010 (2)
+  #        "Battery 2 under volt",                                        // 0000 0000 0000 0000 0000 0000 0000 0100 (3)
+  #        "Battery 2 discharge over current",                            // 0000 0000 0000 0000 0000 0000 0000 1000 (4)
+  #        "Battery 2 over temperature",                                  // 0000 0000 0000 0000 0000 0000 0001 0000 (5)
+  #        "Battery 2 under temperature",                                 // 0000 0000 0000 0000 0000 0000 0010 0000 (6)
+  #        "Reserved",                                                    // 0000 0000 0000 0000 0000 0000 0100 0000 (7)
+  #        "Reserved",                                                    // 0000 0000 0000 0000 0000 0000 1000 0000 (8)
+  #        "Communication error (Inverter-BMS 2)",                        // 0000 0000 0000 0000 0000 0001 0000 0000 (9)
+  #        "Reserved",                                                    // 0000 0000 0000 0000 0000 0010 0000 0000 (10)
+  #        "Reserved",                                                    // 0000 0000 0000 0000 0000 0100 0000 0000 (11)
+  #        "Reserved",                                                    // 0000 0000 0000 0000 0000 1000 0000 0000 (12)
+  #        "Reserved",                                                    // 0000 0000 0000 0000 0001 0000 0000 0000 (13)
+  #        "Reserved",                                                    // 0000 0000 0000 0000 0010 0000 0000 0000 (14)
+  #        "Reserved",                                                    // 0000 0000 0000 0000 0100 0000 0000 0000 (15)
+  #        "reserved",                                                    // 0000 0000 0000 0000 1000 0000 0000 0000 (16)
+  #    };
+  #    
+  #    std::string values = "";
+  #    uint16_t mask16 = modbus_controller::word_from_hex_str(x, 0);
+  #    if (mask16) {
+  #      for (int i = 0; i < WARNINGS16_SIZE; i++) {
+  #      if (mask16 & (1 << i)) {
+  #          values.append(WARNINGS16[i]);
+  #          values.append("; ");
+  #        }
+  #      }
+  #      if (!values.empty()) {
+  #        values.pop_back();
+  #      }
+  #    }
+  #    if(values.length() == 0) values.append("No errors");
+  #    return values;
 
 # =========================
 # 🎛 CONTROL
@@ -1467,9 +2713,12 @@ select:
       "UZ Lithium-ion": 5
       #"VestMoods Lithium-ion": 6
       #"XinYi Lithium-ion": 7 
+      #"PYLON Force H1": 10 
       "Prime VOLT-LV": 66
-      "Lithium LV": 68 
-  
+      "Lithium LV": 68
+      #"UZ-HV": 130
+      #"Dyness-HV": 133 
+        
   - platform: modbus_controller                                   
     modbus_controller_id: fast
     id: bms_comm_address
@@ -1484,6 +2733,10 @@ select:
       "2": 2
       "3": 3
       "4": 4
+      "5": 5
+      "6": 6
+      "7": 7
+      "8": 8
 
   - platform: modbus_controller                                   
     modbus_controller_id: fast
