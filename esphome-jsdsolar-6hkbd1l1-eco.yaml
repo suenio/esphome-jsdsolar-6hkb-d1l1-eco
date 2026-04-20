@@ -165,8 +165,8 @@ sensor:
 # =========================
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: phase_a_voltage
-    name: "${cat2} Phase A Voltage"
+    id: l1_voltage
+    name: "${cat2} L1 Voltage"
     entity_category: DIAGNOSTIC
     address: 0x1001
     register_type: holding
@@ -176,8 +176,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: phase_a_current
-    name: "${cat2} Phase A Current"
+    id: l1_current
+    name: "${cat2} L1 Current"
     entity_category: DIAGNOSTIC
     address: 0x1002
     register_type: holding
@@ -187,8 +187,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: phase_a_power
-    name: "${cat2} Phase A Power"
+    id: l1_power
+    name: "${cat2} L1 Power"
     entity_category: DIAGNOSTIC
     address: 0x1003
     register_type: holding
@@ -198,8 +198,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: fast
-    id: phase_a_frequency
-    name: "${cat2} Phase A Frequency"
+    id: l1_frequency
+    name: "${cat2} L1 Frequency"
     entity_category: DIAGNOSTIC
     address: 0x1005
     register_type: holding
@@ -209,8 +209,8 @@ sensor:
 
 #  - platform: modbus_controller
 #    modbus_controller_id: fast
-#    id: phase_b_voltage
-#    name: "${cat2} Phase B Voltage"
+#    id: l2_voltage
+#    name: "${cat2} L2 Voltage"
 #    entity_category: DIAGNOSTIC
 #    address: 0x1006
 #    register_type: holding
@@ -220,8 +220,8 @@ sensor:
 
 #  - platform: modbus_controller
 #    modbus_controller_id: fast
-#    id: phase_b_current
-#    name: "${cat2} Phase B Current"
+#    id: l2_current
+#    name: "${cat2} L2 Current"
 #    entity_category: DIAGNOSTIC
 #    address: 0x1007
 #    register_type: holding
@@ -231,8 +231,8 @@ sensor:
 
 #  - platform: modbus_controller
 #    modbus_controller_id: fast
-#    id: phase_b_power
-#    name: "${cat2} Phase B Power"
+#    id: l2_power
+#    name: "${cat2} L2 Power"
 #    entity_category: DIAGNOSTIC
 #    address: 0x1008
 #    register_type: holding
@@ -242,8 +242,8 @@ sensor:
 
 #  - platform: modbus_controller
 #    modbus_controller_id: fast
-#    id: phase_b_frequency
-#    name: "${cat2} Phase B Frequency"
+#    id: l2_frequency
+#    name: "${cat2} L2 Frequency"
 #    entity_category: DIAGNOSTIC
 #    address: 0x100A
 #    register_type: holding
@@ -253,8 +253,8 @@ sensor:
 
 #  - platform: modbus_controller
 #    modbus_controller_id: fast
-#    id: phase_c_voltage
-#    name: "${cat2} Phase C Voltage"
+#    id: l3_voltage
+#    name: "${cat2} L3 Voltage"
 #    entity_category: DIAGNOSTIC
 #    address: 0x100B
 #    register_type: holding
@@ -264,8 +264,8 @@ sensor:
 
 #  - platform: modbus_controller
 #    modbus_controller_id: fast
-#    id: phase_c_current
-#    name: "${cat2} Phase C Current"
+#    id: l3_current
+#    name: "${cat2} L3 Current"
 #    entity_category: DIAGNOSTIC
 #    address: 0x100C
 #    register_type: holding
@@ -275,8 +275,8 @@ sensor:
 
 #  - platform: modbus_controller
 #    modbus_controller_id: fast
-#    id: phase_c_power
-#    name: "${cat2} Phase C Power"
+#    id: l3_power
+#    name: "${cat2} L3 Power"
 #    entity_category: DIAGNOSTIC
 #    address: 0x100D
 #    register_type: holding
@@ -286,8 +286,8 @@ sensor:
 
 #  - platform: modbus_controller
 #    modbus_controller_id: fast
-#    id: phase_c_frequency
-#    name: "${cat2} Phase C Frequency"
+#    id: l3_frequency
+#    name: "${cat2} L3 Frequency"
 #    entity_category: DIAGNOSTIC
 #    address: 0x100F
 #    register_type: holding
@@ -1755,6 +1755,150 @@ sensor:
     filters: [{ multiply: 0.01 }]
 
 # =========================
+# ⚡ ENERGY - AC Couple
+# =========================
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: l1_phase_voltage_of_ac_couple
+    name: "${cat3} L1 phase voltage of AC Couple"
+    entity_category: DIAGNOSTIC
+    address: 0x1500
+    register_type: holding
+    value_type: U_WORD
+    unit_of_measurement: V
+    filters: [{ multiply: 0.1 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: l1_phase_current_of_ac_couple
+    name: "${cat3} L1 current of AC Couple"
+    entity_category: DIAGNOSTIC
+    address: 0x1501
+    register_type: holding
+    value_type: S_DWORD
+    unit_of_measurement: A
+    filters: [{ multiply: 0.01 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: l1_phase_power_of_ac_couple
+    name: "${cat3} L1 power of AC Couple"
+    entity_category: DIAGNOSTIC
+    address: 0x1503
+    register_type: holding
+    value_type: S_DWORD
+    unit_of_measurement: W
+    filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: l2_phase_voltage_of_ac_couple
+  #  name: "${cat3} L2 phase voltage of AC Couple"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1505
+  #  register_type: holding
+  #  value_type: U_WORD
+  #  unit_of_measurement: V
+  #  filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: l2_phase_current_of_ac_couple
+  #  name: "${cat3 L2 current of AC Couple"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1506
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: A
+  #  filters: [{ multiply: 0.01 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: l2_phase_power_of_ac_couple
+  #  name: "${cat3} L2 power of AC Couple"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1508
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: W
+  #  filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: l3_phase_voltage_of_ac_couple
+  #  name: "${cat3} L3 phase voltage of AC Couple"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x150A
+  #  register_type: holding
+  #  value_type: U_WORD
+  #  unit_of_measurement: V
+  #  filters: [{ multiply: 0.1 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: l3_phase_current_of_ac_couple
+  #  name: "${cat3 L3 current of AC Couple"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x150B
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: A
+  #  filters: [{ multiply: 0.01 }]
+
+  #- platform: modbus_controller
+  #  modbus_controller_id: fast
+  #  id: l3_phase_power_of_ac_couple
+  #  name: "${cat3} L3 power of AC Couple"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x150D
+  #  register_type: holding
+  #  value_type: S_DWORD
+  #  unit_of_measurement: W
+  #  filters: [{ multiply: 0.1 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: frequency_of_ac_couple
+    name: "${cat2} Frequency of AC Couple"
+    entity_category: DIAGNOSTIC
+    address: 0x150F
+    register_type: holding
+    value_type: U_WORD
+    unit_of_measurement: Hz
+    filters: [{ multiply: 0.01 }]
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: energy_today_of_ac_couple
+    name: "${cat2} Energy Today of AC Couple"
+    entity_category: DIAGNOSTIC
+    address: 0x1510
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: kWh
+        
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: energy_total_of_ac_couple
+    name: "${cat2} Energy Total of AC Couple"
+    entity_category: DIAGNOSTIC
+    address: 0x1512
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: kWh
+
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: energy_today_of_ac_couple_hp
+    name: "${cat2} Energy Today of AC Couple (HP)"
+    entity_category: DIAGNOSTIC
+    address: 0x1514
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: Wh
+     
+
+# =========================
 # 🔋 BATTERY
 # =========================
   - platform: modbus_controller
@@ -1985,7 +2129,7 @@ text_sensor:
     raw_encode: HEXBYTES
     lambda: |-
       std::string values = "";
-      uint16_t mask = modbus_controller::word_from_hex_str(x, 0);
+      uint16_t mask = modbus::helpers::word_from_hex_str(x, 0);
       uint16_t tmpMask = mask & 0b111;
       switch(tmpMask) {
         case 0b000:
@@ -2125,6 +2269,16 @@ text_sensor:
       }
       return newString;
   
+  - platform: template
+    id: device_model_full_name
+    name: "${cat1} Device Model Full Name"
+    lambda: |-
+      std::string newString;
+      newString.append(id(device_model).state);
+      newString.append(id(device_model_extended).state);
+      return newString;
+    update_interval: 60s
+    
   - platform: modbus_controller   #ok
     modbus_controller_id: fast
     id: device_serial_number
@@ -2166,6 +2320,16 @@ text_sensor:
           newString.push_back(chr);
       }
       return newString;
+  
+  - platform: template
+    id: device_serial_number_full
+    name: "${cat1} Device Serial Number Full"
+    lambda: |-
+      std::string newString;
+      newString.append(id(device_serial_number).state);
+      newString.append(id(device_serial_number_extended).state);
+      return newString;
+    update_interval: 60s
   
   - platform: modbus_controller   #ok but not documented in file for JSDSolar
     modbus_controller_id: fast
@@ -2277,7 +2441,7 @@ text_sensor:
     register_type: holding
     raw_encode: HEXBYTES
     lambda: |-
-      uint16_t value = modbus_controller::word_from_hex_str(x, 0);
+      uint16_t value = modbus::helpers::word_from_hex_str(x, 0);
       switch(value) {
         case 1: return {"Single phase (P1)"};
         case 2: return {"Split phase"};
@@ -2299,7 +2463,7 @@ text_sensor:
     register_type: holding
     raw_encode: HEXBYTES
     lambda: |-
-      uint16_t value = modbus_controller::word_from_hex_str(x, 0);
+      uint16_t value = modbus::helpers::word_from_hex_str(x, 0);
       switch(value) {
         case 0: return {"On Grid"};
         case 1: return {"AC couple without GEN (LV battery)"};
@@ -2413,7 +2577,7 @@ text_sensor:
     register_type: holding
     raw_encode: HEXBYTES
     lambda: |-
-      uint16_t value = modbus_controller::word_from_hex_str(x, 0);
+      uint16_t value = modbus::helpers::word_from_hex_str(x, 0);
       switch(value) {
         case 0: return {"Initial"};
         case 1: return {"Standby"};
@@ -2456,7 +2620,7 @@ text_sensor:
           "Boost abnormal",                                              // 1000 0000 0000 0000 
       };
       std::string values = "";
-      uint16_t mask = modbus_controller::word_from_hex_str(x, 0);
+      uint16_t mask = modbus::helpers::word_from_hex_str(x, 0);
       if (mask) {
         for (int i = 0; i < WARNINGS_SIZE; i++) {
           if (mask & (1 << i)) {
@@ -2500,7 +2664,7 @@ text_sensor:
           "Grid high average voltage",                                   // 0010 0000 0000 0000 (16)
       };
       std::string values = "";
-      uint16_t mask = modbus_controller::word_from_hex_str(x, 0);
+      uint16_t mask = modbus::helpers::word_from_hex_str(x, 0);
       if (mask) {
         for (int i = 0; i < WARNINGS_SIZE; i++) {
           if (mask & (1 << i)) {
@@ -2544,7 +2708,7 @@ text_sensor:
           "Phase Sequence abnormal",                                     // 0010 0000 0000 0000 (16)
       };
       std::string values = "";
-      uint16_t mask = modbus_controller::word_from_hex_str(x, 0);
+      uint16_t mask = modbus::helpers::word_from_hex_str(x, 0);
       if (mask) {
         for (int i = 0; i < WARNINGS_SIZE; i++) {
           if (mask & (1 << i)) {
@@ -2571,7 +2735,7 @@ text_sensor:
     lambda: |-           
       std::string values = "";
       for(int j = 2; j >= 0 ;j -= 2) {
-        uint16_t mask16 = modbus_controller::word_from_hex_str(x, j);
+        uint16_t mask16 = modbus::helpers::word_from_hex_str(x, j);
         for (int i = 0; i < 16; i++) {
           if (mask16 & (1 << i)) {
             values.append("1");
@@ -2616,7 +2780,7 @@ text_sensor:
       };
       
       std::string values = "";
-      uint16_t mask16 = modbus_controller::word_from_hex_str(x, 0);
+      uint16_t mask16 = modbus::helpers::word_from_hex_str(x, 0);
       if (mask16) {
         for (int i = 0; i < WARNINGS16_SIZE; i++) {
         if (mask16 & (1 << i)) {
@@ -2661,7 +2825,7 @@ text_sensor:
   #    };
   #    
   #    std::string values = "";
-  #    uint16_t mask16 = modbus_controller::word_from_hex_str(x, 0);
+  #    uint16_t mask16 = modbus::helpers::word_from_hex_str(x, 0);
   #    if (mask16) {
   #      for (int i = 0; i < WARNINGS16_SIZE; i++) {
   #      if (mask16 & (1 << i)) {
@@ -2737,6 +2901,15 @@ select:
       "6": 6
       "7": 7
       "8": 8
+      "9": 9
+      "10": 10
+      "11": 11
+      "12": 12
+      "13": 13
+      "14": 14
+      "15": 15
+      "16": 16
+
 
   - platform: modbus_controller                                   
     modbus_controller_id: fast
@@ -2780,6 +2953,20 @@ select:
       "50 Hz": 5000
       "60 Hz": 6000
 
+  - platform: modbus_controller                                  
+    modbus_controller_id: fast
+    id: gen_port_mode
+    name: "${cat3} GEN port Mode"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2122
+    value_type: U_WORD
+    optionsmap:
+      "Disable": 0
+      "Generator": 1
+      "Smart Load": 2
+      "Inverter Input": 3    
+      
   - platform: modbus_controller      #ok inverter settings -> QuickSettings(4) -> Capacity Management Mode                            
     modbus_controller_id: fast
     id: capacity_management_mode
@@ -2789,8 +2976,8 @@ select:
     address: 0x2124
     value_type: U_WORD
     optionsmap:
-      "SOC": 0
-      "Voltage": 1
+      "Battery SOC": 0
+      "Battery Voltage": 1
 
   - platform: modbus_controller                                   
     modbus_controller_id: fast
@@ -3037,7 +3224,7 @@ number:
   - platform: modbus_controller    #ok inverter settings -> Grid Charge stop Battery SOC (%)   or   settings -> QuickSettings(2) ->  Grid Charge stop Battery SOC (%)                   
     modbus_controller_id: fast
     id: grid_charge_stop_battery_soc
-    name: "${cat3} grid_charge_stop_battery_soc"
+    name: "${cat3} Grid Charge Stop Battery SOC"
     entity_category: config
     use_write_multiple: true
     address: 0x2117
@@ -3140,6 +3327,48 @@ number:
     write_lambda: |-
       return x * 100.0f;
   
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: maximum_input_power_from_grid
+    name: "${cat3} Maximum Input Power from Grid"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2125
+    value_type: U_WORD
+    min_value: 0
+    max_value: 9000
+    step: 1
+    unit_of_measurement: "W"
+    icon: mdi:cog
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: maximum_gen_charge_power
+    name: "${cat3} Maximum GEN Charge Power"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2126
+    value_type: U_WORD
+    min_value: 0
+    max_value: 6600
+    step: 1
+    unit_of_measurement: "W"
+    icon: mdi:cog
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: maximum_input_power_from_generator
+    name: "${cat3} Maximum Input Power from Generator"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2127
+    value_type: U_WORD
+    min_value: 0
+    max_value: 6600
+    step: 1
+    unit_of_measurement: "W"
+    icon: mdi:cog
+
   - platform: modbus_controller     #ok inverter settings -> backup reserve (%)                              
     modbus_controller_id: fast
     id: backup_reserve
@@ -3222,6 +3451,24 @@ switch:
     entity_category: config
     register_type: holding
     address: 0x211C
+    bitmask: 0x0001
+  
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: lithium_battery_activation_function
+    name: "${cat3} Lithium Battery Activation Function"
+    entity_category: config
+    register_type: holding
+    address: 0x2123
+    bitmask: 0x0001
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: connect_gen_to_grid_port_function
+    name: "${cat3} Connect GEN to Grid Port Function"
+    entity_category: config
+    register_type: holding
+    address: 0x2128
     bitmask: 0x0001
     
 #button:
