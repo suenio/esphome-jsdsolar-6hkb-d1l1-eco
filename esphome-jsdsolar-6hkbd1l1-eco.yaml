@@ -115,6 +115,25 @@ modbus_controller:
     setup_priority: -10
     command_throttle: 50ms
 
+
+datetime:
+  # Example Date
+  - platform: template
+    id: my_datetime_date
+    type: date
+    name: "TT Pick a Date"
+    optimistic: yes
+    initial_value: "2024-01-30"
+    restore_value: true
+
+  - platform: template
+    id: my_datetime_time
+    type: time
+    name: "TT Pick a Time"
+    optimistic: yes
+    initial_value: "12:34:56"
+    restore_value: true
+
 sensor:
 # =========================
 # ⚡ SYSTEM INFORMATION
@@ -3369,6 +3388,285 @@ number:
     unit_of_measurement: "W"
     icon: mdi:cog
 
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: generator_start_soc
+    name: "${cat3} Generator Start SOC"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2129
+    value_type: U_WORD
+    min_value: 0
+    max_value: 100
+    step: 1
+    unit_of_measurement: "%"
+    icon: mdi:cog
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: generator_end_soc
+    name: "${cat3} Generator End SOC"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x212A
+    value_type: U_WORD
+    min_value: 0
+    max_value: 100
+    step: 1
+    unit_of_measurement: "%"
+    icon: mdi:cog
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: minimum_pv_power_of_smart_load_on
+    name: "${cat3} Minimum PV Power of Smart Load On"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x212B
+    value_type: U_WORD
+    min_value: 0
+    max_value: 6600
+    step: 1
+    unit_of_measurement: "W"
+    icon: mdi:cog
+  
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: battery_soc_of_smart_load_on
+    name: "${cat3} Battery SOC of Smart Load On"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x212C
+    value_type: U_WORD
+    min_value: 0
+    max_value: 100
+    step: 1
+    unit_of_measurement: "%"
+    icon: mdi:cog
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: battery_soc_of_smart_load_off
+    name: "${cat3} Battery SOC of Smart Load Off"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x212D
+    value_type: U_WORD
+    min_value: 0
+    max_value: 100
+    step: 1
+    unit_of_measurement: "%"
+    icon: mdi:cog
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: off_grid_start_up_battery_voltage
+    name: "${cat3} Off-grid Start-up battery Voltage"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x212F
+    value_type: U_WORD
+    min_value: 0.0
+    max_value: 300.0
+    step: 0.1
+    unit_of_measurement: "V"
+    icon: mdi:cog
+    lambda: "return x * 0.1f;"
+    write_lambda: |-
+      return x * 10.0f;
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: battery_voltage_of_smart_load_on
+    name: "${cat3} Battery Voltage of Smart Load On"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2130
+    value_type: U_WORD
+    min_value: 0.0
+    max_value: 64.0
+    step: 0.1
+    unit_of_measurement: "V"
+    icon: mdi:cog
+    lambda: "return x * 0.1f;"
+    write_lambda: |-
+      return x * 10.0f;
+  
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: battery_voltage_of_smart_load_off
+    name: "${cat3} Battery Voltage of Smart Load Off"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2131
+    value_type: U_WORD
+    min_value: 0.0
+    max_value: 64.0
+    step: 0.1
+    unit_of_measurement: "V"
+    icon: mdi:cog
+    lambda: "return x * 0.1f;"
+    write_lambda: |-
+      return x * 10.0f;
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: backup_minimum_output_voltage
+    name: "${cat3} Backup Minimum Output Voltage"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2132
+    value_type: U_WORD
+    min_value: 115.0
+    max_value: 230.0
+    step: 0.1
+    unit_of_measurement: "V"
+    icon: mdi:cog
+    lambda: "return x * 0.1f;"
+    write_lambda: |-
+      return x * 10.0f;
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: backup_maximum_output_voltage
+    name: "${cat3} Backup Maximum Output Voltage"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2133
+    value_type: U_WORD
+    min_value: 230.0
+    max_value: 345.0
+    step: 0.1
+    unit_of_measurement: "V"
+    icon: mdi:cog
+    lambda: "return x * 0.1f;"
+    write_lambda: |-
+      return x * 10.0f;
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: generator_start_battery_voltage
+    name: "${cat3} Generator Start Battery Voltage"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2134
+    value_type: U_WORD
+    min_value: 0.0
+    max_value: 64.0
+    step: 0.1
+    unit_of_measurement: "V"
+    icon: mdi:cog
+    lambda: "return x * 0.1f;"
+    write_lambda: |-
+      return x * 10.0f;
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: generator_end_battery_voltage
+    name: "${cat3} Generator End Battery Voltage"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2135
+    value_type: U_WORD
+    min_value: 0.0
+    max_value: 64.0
+    step: 0.1
+    unit_of_measurement: "V"
+    icon: mdi:cog
+    lambda: "return x * 0.1f;"
+    write_lambda: |-
+      return x * 10.0f;
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: generator_max_runtime
+    name: "${cat3} Generator Max Runtime"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2136
+    value_type: U_WORD
+    min_value: 0
+    max_value: 65000
+    step: 1
+    unit_of_measurement: "min"
+    icon: mdi:cog
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: generator_down_time
+    name: "${cat3} Generator Down Time"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2137
+    value_type: U_WORD
+    min_value: 0
+    max_value: 65000
+    step: 1
+    unit_of_measurement: "min"
+    icon: mdi:cog
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: battery_soc_of_inverter_on
+    name: "${cat3} Battery SOC of Inverter On"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2138
+    value_type: U_WORD
+    min_value: 0
+    max_value: 100
+    step: 1
+    unit_of_measurement: "%"
+    icon: mdi:cog
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: battery_soc_of_inverter_off
+    name: "${cat3} Battery SOC of Inverter Off"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2139
+    value_type: U_WORD
+    min_value: 0
+    max_value: 100
+    step: 1
+    unit_of_measurement: "%"
+    icon: mdi:cog
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: battery_voltage_of_inverter_on
+    name: "${cat3} Battery Voltage of Inverter On"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x213A
+    value_type: U_WORD
+    min_value: 0.0
+    max_value: 64.0
+    step: 0.1
+    unit_of_measurement: "V"
+    icon: mdi:cog
+    lambda: "return x * 0.1f;"
+    write_lambda: |-
+      return x * 10.0f;
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: battery_voltage_of_inverter_off
+    name: "${cat3} Battery Voltage of Inverter Off"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x213A
+    value_type: U_WORD
+    min_value: 0.0
+    max_value: 64.0
+    step: 0.1
+    unit_of_measurement: "V"
+    icon: mdi:cog
+    lambda: "return x * 0.1f;"
+    write_lambda: |-
+      return x * 10.0f;
+    
   - platform: modbus_controller     #ok inverter settings -> backup reserve (%)                              
     modbus_controller_id: fast
     id: backup_reserve
@@ -3470,7 +3768,17 @@ switch:
     register_type: holding
     address: 0x2128
     bitmask: 0x0001
-    
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: always_on_with_grid_function
+    name: "${cat3} Always On with Grid Function"
+    entity_category: config
+    register_type: holding
+    address: 0x212E
+    bitmask: 0x0001
+
+
 #button:
 #  - platform: template
 #    name: "${cat1} Force data load"
