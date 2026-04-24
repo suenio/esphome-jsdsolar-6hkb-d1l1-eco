@@ -94,26 +94,26 @@ modbus_controller:
     setup_priority: -10
     #command_throttle: 10ms
 
-  - id: medium
-    address: 1
-    modbus_id: modbus1
-    update_interval: 5s
-    setup_priority: -10
-    command_throttle: 2ms
+  #- id: medium
+  #  address: 1
+  #  modbus_id: modbus1
+  #  update_interval: 5s
+  #  setup_priority: -10
+  #  command_throttle: 2ms
 
-  - id: slow
-    address: 1
-    modbus_id: modbus1
-    update_interval: 5s
-    setup_priority: -10
-    command_throttle: 30ms
+  #- id: slow
+  #  address: 1
+  #  modbus_id: modbus1
+  #  update_interval: 5s
+  #  setup_priority: -10
+  #  command_throttle: 30ms
   
-  - id: very_slow
-    address: 1
-    modbus_id: modbus1
-    update_interval: 10s
-    setup_priority: -10
-    command_throttle: 50ms
+  #- id: very_slow
+  #  address: 1
+  #  modbus_id: modbus1
+  #  update_interval: 1s
+  #  setup_priority: -10
+  #  command_throttle: 50ms
 
 
 datetime:
@@ -127,13 +127,66 @@ datetime:
     restore_value: true
 
   - platform: template
-    id: my_datetime_time
+    id: generator_start_time_setter
     type: time
-    name: "TT Pick a Time"
+    name: "${cat3} Generator Start time Setter"
     optimistic: yes
-    initial_value: "12:34:56"
-    restore_value: true
+    #initial_value: "12:34:56"
+    #restore_value: true
+    on_value:
+      then:
+        - lambda: |-
+            std::string valueStr = id(generator_start_time).state;
+            ESP_LOGD("main", "G Start Time: %s", valueStr.c_str());
+            if(valueStr.length() > 3) {
+              valueStr.erase(2,1);
+              uint16_t value = modbus::helpers::word_from_hex_str(valueStr, 0);
+              uint16_t new_value = x.hour * 256 + x.minute;
+              if(value != new_value) {              
+                esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(fast, 0x2154, new_value);
+                fast->queue_command(set_payload_command);
+                //char hex_buf[3];
+                //std::string output_str{};
+                //snprintf(hex_buf, sizeof(hex_buf), "%02x", x.hour);
+                //output_str += hex_buf;
+                //output_str += ":";
+                //snprintf(hex_buf, sizeof(hex_buf), "%02x", x.minute);
+                //output_str += hex_buf;
+                //id(generator_start_time).state = output_str;
+                ESP_LOGD("main", "Updated Start ##########################################################");
+              }
+            }
 
+  - platform: template
+    id: generator_end_time_setter
+    type: time
+    name: "${cat3} Generator End time Setter"
+    optimistic: yes
+    #initial_value: "12:34:56"
+    #restore_value: true
+    on_value:
+      then:
+        - lambda: |-
+            std::string valueStr = id(generator_end_time).state;
+            ESP_LOGD("main", "G End Time: %s", valueStr.c_str());
+            if(valueStr.length() > 3) {
+              valueStr.erase(2,1);
+              uint16_t value = modbus::helpers::word_from_hex_str(valueStr, 0);
+              uint16_t new_value = x.hour * 256 + x.minute;
+              if(value != new_value) {              
+                esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(fast, 0x2155, new_value);
+                fast->queue_command(set_payload_command);
+                //char hex_buf[3];
+                //std::string output_str{};
+                //snprintf(hex_buf, sizeof(hex_buf), "%02x", x.hour);
+                //output_str += hex_buf;
+                //output_str += ":";
+                //snprintf(hex_buf, sizeof(hex_buf), "%02x", x.minute);
+                //output_str += hex_buf;
+                //id(generator_end_time).state = output_str;
+                ESP_LOGD("main", "Updated End ##########################################################");
+              }
+            }
 sensor:
 # =========================
 # ⚡ SYSTEM INFORMATION
@@ -2607,6 +2660,88 @@ text_sensor:
         default: return {"Unknown"};
       }
 
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: generator_start_time
+    name: "${cat3} Generator Start Time"
+    entity_category: DIAGNOSTIC
+    address: 0x2154
+    register_type: holding
+    raw_encode: HEXBYTES
+    lambda: |-
+      std::string newString;
+      std::string setterString;
+      newString = x;   
+      newString.insert(2, ":");   
+      setterString = newString;
+      setterString.append(":00");
+      auto call = id(generator_start_time_setter).make_call();
+      call.set_time(setterString);
+      call.perform();
+      return newString;    
+  
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: generator_end_time
+    name: "${cat3} Generator End Time"
+    entity_category: DIAGNOSTIC
+    address: 0x2155
+    register_type: holding
+    raw_encode: HEXBYTES
+    lambda: |-
+      std::string newString;
+      std::string setterString;
+      newString = x;   
+      newString.insert(2, ":");   
+      setterString.append(newString);
+      setterString.append(":00");
+      auto call = id(generator_end_time_setter).make_call();
+      call.set_time(setterString);
+      call.perform();
+      return newString;       
+
+  - platform: modbus_controller   #ok
+    modbus_controller_id: fast
+    id: wifi_sta_ssid
+    name: "${cat4} WIFI STA SSID"
+    entity_category: DIAGNOSTIC
+    address: 0x3060
+    register_type: holding
+    register_count: 16
+    raw_encode: HEXBYTES
+    response_size: 32
+    lambda: |-
+      int len = x.length();
+      std::string newString;
+      for(int i=0; i< len; i+=2)
+      {
+          std::string byte = x.substr(i,2);
+          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+          newString.push_back(chr);
+      }
+      return newString;
+
+  - platform: modbus_controller   #ok
+    modbus_controller_id: fast
+    id: wifi_sta_password
+    name: "${cat4} WIFI STA Password"
+    entity_category: DIAGNOSTIC
+    address: 0x3070
+    register_type: holding
+    register_count: 16
+    raw_encode: HEXBYTES
+    response_size: 32
+    lambda: |-
+      int len = x.length();
+      std::string newString;
+      for(int i=0; i< len; i+=2)
+      {
+          std::string byte = x.substr(i,2);
+          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+          newString.push_back(chr);
+      }
+      return newString;
+
 # =========================
 # 🚨 ERRORS
 # =========================
@@ -2859,6 +2994,75 @@ text_sensor:
   #    if(values.length() == 0) values.append("No errors");
   #    return values;
 
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: dry_contact_status
+    name: "${cat4} Dry Contact Status"
+    entity_category: DIAGNOSTIC
+    address: 0x313B
+    register_type: holding
+    raw_encode: HEXBYTES
+    lambda: |-
+      std::string values = "";
+      uint16_t mask = modbus::helpers::word_from_hex_str(x, 0);
+      uint16_t tmpMask = mask & 0b1;
+      switch(tmpMask) {
+        case 0b0:
+          values.append("Dry Contct Off (Open)");
+          break;
+        case 0b1:
+          values.append("Dry Contact On (Close)");
+          break;        
+      }
+      values.append("; ");
+            
+      tmpMask = mask & 0b10;
+      switch(tmpMask) {
+        case 0b00:
+          values.append("Generator Dry Contact Off (Open)");
+          break;
+        case 0b10:
+          values.append("Generator Dry Contact On (Close)");
+          break;        
+      }
+      values.append("; ");
+
+      tmpMask = mask & 0b100;
+      switch(tmpMask) {
+        case 0b000:
+          values.append("Smart load Dry Contact Off (Open)");
+          break;
+        case 0b100:
+          values.append("Smart load Dry Contact On (Close)");
+          break;        
+      }
+      values.append("; ");
+
+
+      tmpMask = mask & 0b100000000000000;
+      switch(tmpMask) {
+        case 0b000000000000000:
+          values.append("DI1 (Non-active)");
+          break;
+        case 0b100000000000000:
+          values.append("DI1 (Active)");
+          break;        
+      }
+      values.append("; ");
+
+      tmpMask = mask & 0b1000000000000000;
+      switch(tmpMask) {
+        case 0b0000000000000000:
+          values.append("Remote OFF (Non-active)");
+          break;
+        case 0b1000000000000000:
+          values.append("Remote OFF (Active)");
+          break;        
+      }
+      values.append("; ");
+
+      return values;
+
 # =========================
 # 🎛 CONTROL
 # =========================
@@ -3000,7 +3204,126 @@ select:
 
   - platform: modbus_controller                                   
     modbus_controller_id: fast
-    id: iniverter_modbus_address
+    id: parallel_system_battery_connect_type
+    name: "${cat3} Parallel System Battery Connect Type"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x214D
+    value_type: U_WORD
+    optionsmap:
+      "Battery Connect Parallel": 0
+      "Battery Connect Independence": 1
+  
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: generator_run_cycle
+    name: "${cat3} Generator Run Cycle"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2151
+    value_type: U_WORD
+    optionsmap:
+      "Disable": 0
+      "Weekly Cycle": 1
+      "Monthly Cycle": 2
+  
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: generator_run_day
+    name: "${cat3} Generator Run Day"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2152
+    value_type: U_WORD
+    optionsmap:
+      "Monday": 1
+      "Tuesday": 2
+      "Wednesday": 3
+      "Thursday": 4
+      "Friday": 5
+      "Saturday": 6
+      "Sunday": 7
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: generatror_dry_force_on_off
+    name: "${cat3} Generator DRY force ON/OFF"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2156
+    value_type: U_WORD
+    optionsmap:
+      "Auto": 0
+      "On": 1
+      "Off": 2
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: rs485_device_hybrid
+    name: "${cat3} RS485 device (Hybrid)"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x215A
+    value_type: U_WORD
+    optionsmap:
+      "Slave": 0x0000
+      "CHINT/DTSU666": 0x0001
+      "CHINT/DDSU666": 0x0002
+      "String Inverter": 0x0003
+      "Eastron/SDM630": 0x0004
+      "Gavazzi/ET/EM100": 0x0005
+      "Gavazzi/ET/EM300": 0x0006
+      "Acrel/ACR10R-DxxTE": 0x0007
+      "Acrel/ACR10R-DxxTE4": 0x0008
+      "Eastron/SDM120/230-Modbus": 0x0009
+      "Eastron/SEM3_WL-Modbus": 0x000A
+
+  #- platform: modbus_controller #provided in jsdsolar specification but not available in inverter                                   
+  #  modbus_controller_id: fast
+  #  id: battery_connection_type
+  #  name: "${cat3} Battery Connection Type"
+  #  entity_category: config
+  #  use_write_multiple: true
+  #  address: 0x215F
+  #  value_type: U_WORD
+  #  optionsmap:
+  #    "Null": 0x00AA
+  #    "Single Battery (BAT1)": 0x0001
+  #    "Single Battery (BAT2)": 0x0002
+  #    "Two Separate Batteries (BAT1, BAT2)": 0x0003
+  #    "Single Battery (BAT1+BAT2)": 0x0004
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: bms_communication_error_behaviour
+    name: "${cat3} BMS COmmunication error behaviour"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x21BE
+    value_type: U_WORD
+    optionsmap:
+      "Inverter turn off (stop charging/discharging)": 0x0000
+      "Inverter keep running (limit charging current and voltage)": 0x0001
+                  
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: dry_contact_function
+    name: "${cat4} Dry Contact Function"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x3020
+    value_type: U_WORD
+    optionsmap:
+      "Disable": 0
+      "General": 1
+      "Smart load": 2
+      "Power mode active": 3
+      "Manual control mode": 4
+      "Time mode": 5
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: inverter_modbus_address
     name: "${cat4} Inverter Modbus Address"
     entity_category: config
     use_write_multiple: true
@@ -3012,6 +3335,21 @@ select:
       "2": 2
       "3": 3
       "4": 4
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: rs485_baud_rate
+    name: "${cat4} RS485 Baud Rate"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x304C
+    value_type: U_WORD
+    optionsmap:
+      "2400": 1
+      "4800": 2
+      "9600": 3
+      "14400": 4
+      "19200": 5
 
   - platform: modbus_controller                                   
     modbus_controller_id: fast
@@ -3656,7 +3994,132 @@ number:
     name: "${cat3} Battery Voltage of Inverter Off"
     entity_category: config
     use_write_multiple: true
-    address: 0x213A
+    address: 0x213B
+    value_type: U_WORD
+    min_value: 0.0
+    max_value: 64.0
+    step: 0.1
+    unit_of_measurement: "V"
+    icon: mdi:cog
+    lambda: "return x * 0.1f;"
+    write_lambda: |-
+      return x * 10.0f;
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: ac_couple_frequency_high
+    name: "${cat3} AC Couple frequency high"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x213B
+    value_type: U_WORD
+    min_value: 0
+    max_value: 7000
+    step: 1
+    unit_of_measurement: "Hz"
+    icon: mdi:cog
+    lambda: "return x * 0.01f;"
+    write_lambda: |-
+      return x * 100.0f;
+  
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: force_charge_start_soc
+    name: "${cat3} Force Charge Start SOC"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2144
+    value_type: U_WORD
+    min_value: 0
+    max_value: 100
+    step: 1
+    unit_of_measurement: "%"
+    icon: mdi:cog
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: force_charge_end_soc
+    name: "${cat3} Force Charge End SOC"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2145
+    value_type: U_WORD
+    min_value: 0
+    max_value: 100
+    step: 1
+    unit_of_measurement: "%"
+    icon: mdi:cog
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: force_charge_start_voltage
+    name: "${cat3} Force Charge Start Voltage"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2146
+    value_type: U_WORD
+    min_value: 0.0
+    max_value: 64.0
+    step: 0.1
+    unit_of_measurement: "V"
+    icon: mdi:cog
+    lambda: "return x * 0.1f;"
+    write_lambda: |-
+      return x * 10.0f;
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: force_charge_end_voltage
+    name: "${cat3} Force Charge End Voltage"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2147
+    value_type: U_WORD
+    min_value: 0.0
+    max_value: 64.0
+    step: 0.1
+    unit_of_measurement: "V"
+    icon: mdi:cog
+    lambda: "return x * 0.1f;"
+    write_lambda: |-
+      return x * 10.0f;
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: battery_voltage_of_grif_charge_end
+    name: "${cat3} Battery Voltage Of Grid Charge End"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2148
+    value_type: U_WORD
+    min_value: 0.0
+    max_value: 64.0
+    step: 0.1
+    unit_of_measurement: "V"
+    icon: mdi:cog
+    lambda: "return x * 0.1f;"
+    write_lambda: |-
+      return x * 10.0f;
+
+  - platform: modbus_controller     #ok inverter settings -> backup reserve (%)                              
+    modbus_controller_id: fast
+    id: backup_reserve_capacity_of_discharge_end_on_grid
+    name: "${cat3} Backup Reserve Capacity of Discharge End (On-Grid)"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x214A
+    value_type: U_WORD
+    min_value: 0
+    max_value: 100    
+    unit_of_measurement: "%"
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: voltage_of_discharge_end_on_grid
+    name: "${cat3} Voltage of Discharge End (On-Grid)"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x214B
     value_type: U_WORD
     min_value: 0.0
     max_value: 64.0
@@ -3667,18 +4130,157 @@ number:
     write_lambda: |-
       return x * 10.0f;
     
-  - platform: modbus_controller     #ok inverter settings -> backup reserve (%)                              
+  - platform: modbus_controller                     
     modbus_controller_id: fast
-    id: backup_reserve
-    name: "${cat3} Backup Reserve"
+    id: maximum_grid_forced_charge_power
+    name: "${cat3} Maximum Grid Forced Charge Power"
     entity_category: config
     use_write_multiple: true
-    address: 0x214A
+    address: 0x2150
     value_type: U_WORD
     min_value: 0
-    max_value: 100    
-    unit_of_measurement: "%"
-    
+    max_value: 6000  
+    unit_of_measurement: "W"
+  
+  - platform: modbus_controller                     
+    modbus_controller_id: fast
+    id: generator_run_date
+    name: "${cat3} Generator Run Date"
+    entity_category: config
+    use_write_multiple: true
+    address: 0x2153
+    value_type: U_WORD
+    min_value: 1
+    max_value: 31
+    unit_of_measurement: "d-of-m"
+
+  #- platform: modbus_controller #available in jsdsolar file but not on inverter                                   
+  #  modbus_controller_id: fast
+  #  id: battery_charge_efficiency
+  #  name: "${cat3} Battery Charge Efficiency"
+  #  entity_category: config
+  #  use_write_multiple: true
+  #  address: 0x21B4
+  #  value_type: U_WORD
+  #  min_value: 0
+  #  max_value: 100
+  #  step: 1
+  #  unit_of_measurement: "%"
+  #  icon: mdi:cog
+
+  #- platform: modbus_controller                                   
+  #  modbus_controller_id: fast
+  #  id: battery_rate_temperature
+  #  name: "${cat3} Battery Rate Temperature"
+  #  entity_category: config
+  #  use_write_multiple: true
+  #  address: 0x21B5
+  #  value_type: U_WORD
+  #  min_value: 0
+  #  max_value: 100
+  #  step: 1
+  #  unit_of_measurement: "°C"
+  #  icon: mdi:cog
+
+  #- platform: modbus_controller                                   
+  #  modbus_controller_id: fast
+  #  id: temperature_compensated_battery_capacity
+  #  name: "${cat3} Temperature Compensated Battery Capacity"
+  #  entity_category: config
+  #  use_write_multiple: true
+  #  address: 0x21B6
+  #  value_type: U_WORD
+  #  min_value: 0.0
+  #  max_value: 500.0
+  #  step: 0.1
+  #  unit_of_measurement: "AH"
+  #  icon: mdi:cog
+  #  lambda: "return x * 0.1f;"
+  #  write_lambda: |-
+  #    return x * 10.0f;
+
+  #- platform: modbus_controller                                   
+  #  modbus_controller_id: fast
+  #  id: battery_charging_ah_per_hour
+  #  name: "${cat3} Battery Charging AH per hour"
+  #  entity_category: config
+  #  use_write_multiple: true
+  #  address: 0x21B7
+  #  value_type: U_WORD
+  #  min_value: 0.0
+  #  max_value: 6500.0
+  #  step: 0.1
+  #  unit_of_measurement: "AH"
+  #  icon: mdi:cog
+  #  lambda: "return x * 0.1f;"
+  #  write_lambda: |-
+  #    return x * 10.0f;
+
+  #- platform: modbus_controller                                   
+  #  modbus_controller_id: fast
+  #  id: battery_discharging_ah_per_hour
+  #  name: "${cat3} Battery DisCharging AH per hour"
+  #  entity_category: config
+  #  use_write_multiple: true
+  #  address: 0x21B8
+  #  value_type: U_WORD
+  #  min_value: 0.0
+  #  max_value: 6500.0
+  #  step: 0.1
+  #  unit_of_measurement: "AH"
+  #  icon: mdi:cog
+  #  lambda: "return x * 0.1f;"
+  #  write_lambda: |-
+  #    return x * 10.0f;
+
+  #- platform: modbus_controller                                   
+  #  modbus_controller_id: fast
+  #  id: accumulated_charging_ah
+  #  name: "${cat3} Accumulated Charging AH"
+  #  entity_category: config
+  #  use_write_multiple: true
+  #  address: 0x21B9
+  #  value_type: U_DWORD
+  #  min_value: 0.0
+  #  max_value: 4294967.0
+  #  step: 0.1
+  #  unit_of_measurement: "AH"
+  #  icon: mdi:cog
+  #  lambda: "return x * 0.1f;"
+  #  write_lambda: |-
+  #    return x * 10.0f;
+  
+  #- platform: modbus_controller                                   
+  #  modbus_controller_id: fast
+  #  id: accumulated_discharging_ah
+  #  name: "${cat3} Accumulated DisCharging AH"
+  #  entity_category: config
+  #  use_write_multiple: true
+  #  address: 0x21BB
+  #  value_type: U_DWORD
+  #  min_value: 0.0
+  #  max_value: 4294967.0
+  #  step: 0.1
+  #  unit_of_measurement: "AH"
+  #  icon: mdi:cog
+  #  lambda: "return x * 0.1f;"
+  #  write_lambda: |-
+  #    return x * 10.0f;
+  
+  #- platform: modbus_controller                                   
+  #  modbus_controller_id: fast
+  #  id: temperature_compensated_battery_voltage
+  #  name: "${cat3} Temperature Compensated Battery voltage"
+  #  entity_category: config
+  ##  use_write_multiple: true
+  #  address: 0x21BD
+  #  value_type: U_WORD
+  #  min_value: 0
+  #  max_value: 5
+  #  step: 1
+  #  unit_of_measurement: "1mV°C"
+  #  icon: mdi:cog
+
   - platform: modbus_controller                                   
     modbus_controller_id: fast
     id: maximum_feed_in_grid_power
@@ -3724,24 +4326,6 @@ switch:
     address: 0x2115
     bitmask: 0x0001
 
-  - platform: modbus_controller   #ok inverter settings -> Time Based Control                                  
-    modbus_controller_id: fast
-    id: time_based_control
-    name: "${cat3} Time Based Control"
-    entity_category: config
-    register_type: holding
-    address: 0x214C
-    bitmask: 0x0001
-
-  - platform: modbus_controller    #ok inverter settings -> QuickSettings(6) -> Force Startup with PV Only                                
-    modbus_controller_id: fast
-    id: force_startup_with_pv_only
-    name: "${cat3} Force Startup with PV Only"
-    entity_category: config
-    register_type: holding
-    address: 0x2199
-    bitmask: 0x0001
-
   - platform: modbus_controller                                   
     modbus_controller_id: fast
     id: off_grid_mode
@@ -3778,6 +4362,59 @@ switch:
     address: 0x212E
     bitmask: 0x0001
 
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: support_normal_load_function
+    name: "${cat3} Support Normal Load Function"
+    entity_category: config
+    register_type: holding
+    address: 0x2141
+    bitmask: 0x0001
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: parallel_mode_function
+    name: "${cat3} Parallel Mode Function"
+    entity_category: config
+    register_type: holding
+    address: 0x2143
+    bitmask: 0x0001
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: feed_in_grid_fucntion
+    name: "${cat3} Feed In Grid Function"
+    entity_category: config
+    register_type: holding
+    address: 0x2149
+    bitmask: 0x0001
+
+  - platform: modbus_controller   #ok inverter settings -> Time Based Control                                  
+    modbus_controller_id: fast
+    id: time_based_control
+    name: "${cat3} Time Based Control"
+    entity_category: config
+    register_type: holding
+    address: 0x214C
+    bitmask: 0x0001
+
+  - platform: modbus_controller                                   
+    modbus_controller_id: fast
+    id: ac_coupling_function
+    name: "${cat3} AC Coupling function"
+    entity_category: config
+    register_type: holding
+    address: 0x2159
+    bitmask: 0x0001
+
+  - platform: modbus_controller    #ok inverter settings -> QuickSettings(6) -> Force Startup with PV Only                                
+    modbus_controller_id: fast
+    id: force_startup_with_pv_only
+    name: "${cat3} Force Startup with PV Only"
+    entity_category: config
+    register_type: holding
+    address: 0x2199
+    bitmask: 0x0001
 
 #button:
 #  - platform: template
