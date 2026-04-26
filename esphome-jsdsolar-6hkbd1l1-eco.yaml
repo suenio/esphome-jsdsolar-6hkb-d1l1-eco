@@ -90,8 +90,8 @@ modbus_controller:
   - id: fast
     address: 1
     modbus_id: modbus1
-    update_interval: 15s
-    setup_priority: -10
+    update_interval: 30s
+    #setup_priority: -10
     #command_throttle: 10ms
 
   #- id: medium
@@ -115,78 +115,301 @@ modbus_controller:
   #  setup_priority: -10
   #  command_throttle: 50ms
 
-
-datetime:
-  # Example Date
+button:
+# =========================
+#  Generator work time control
+# =========================
   - platform: template
-    id: my_datetime_date
-    type: date
-    name: "TT Pick a Date"
-    optimistic: yes
-    initial_value: "2024-01-30"
-    restore_value: true
-
-  - platform: template
-    id: generator_start_time_setter
-    type: time
-    name: "${cat3} Generator Start time Setter"
-    optimistic: yes
-    #initial_value: "12:34:56"
-    #restore_value: true
-    on_value:
+    id: t_generator_time_z_read_button
+    name: "${cat3} T Generator Time Z Read Button"
+    on_press:
       then:
         - lambda: |-
             std::string valueStr = id(generator_start_time).state;
-            ESP_LOGD("main", "G Start Time: %s", valueStr.c_str());
+            valueStr.append(":00");
+            auto call1 = id(t_generator_start_time_setter).make_call();
+            call1.set_time(valueStr);
+            call1.perform();
+            valueStr = id(generator_end_time).state;
+            valueStr.append(":00");
+            auto call2 = id(t_generator_end_time_setter).make_call();
+            call2.set_time(valueStr);
+            call2.perform();
+
+  - platform: template
+    id: t_generator_time_z_write_button
+    name: "${cat3} T Generator Time Z Write Button"
+    on_press:
+      then:
+        - lambda: |-
+            std::string valueStr = id(generator_start_time).state;
+            ESP_LOGD("main", "G Old Start Time: %s", valueStr.c_str());
             if(valueStr.length() > 3) {
               valueStr.erase(2,1);
               uint16_t value = modbus::helpers::word_from_hex_str(valueStr, 0);
-              uint16_t new_value = x.hour * 256 + x.minute;
+              uint16_t new_value = id(t_generator_start_time_setter).hour * 256 + id(t_generator_start_time_setter).minute;
+               ESP_LOGD("main", "G New Start Time: %d : %d", id(t_generator_start_time_setter).hour, id(t_generator_start_time_setter).minute);
               if(value != new_value) {              
                 esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(fast, 0x2154, new_value);
                 fast->queue_command(set_payload_command);
-                //char hex_buf[3];
-                //std::string output_str{};
-                //snprintf(hex_buf, sizeof(hex_buf), "%02x", x.hour);
-                //output_str += hex_buf;
-                //output_str += ":";
-                //snprintf(hex_buf, sizeof(hex_buf), "%02x", x.minute);
-                //output_str += hex_buf;
-                //id(generator_start_time).state = output_str;
                 ESP_LOGD("main", "Updated Start ##########################################################");
               }
-            }
-
-  - platform: template
-    id: generator_end_time_setter
-    type: time
-    name: "${cat3} Generator End time Setter"
-    optimistic: yes
-    #initial_value: "12:34:56"
-    #restore_value: true
-    on_value:
-      then:
-        - lambda: |-
-            std::string valueStr = id(generator_end_time).state;
-            ESP_LOGD("main", "G End Time: %s", valueStr.c_str());
+            } 
+            valueStr = id(generator_end_time).state;
+            ESP_LOGD("main", "G Old Start Time: %s", valueStr.c_str());
             if(valueStr.length() > 3) {
               valueStr.erase(2,1);
               uint16_t value = modbus::helpers::word_from_hex_str(valueStr, 0);
-              uint16_t new_value = x.hour * 256 + x.minute;
+              uint16_t new_value = id(t_generator_end_time_setter).hour * 256 + id(t_generator_end_time_setter).minute;
+               ESP_LOGD("main", "G New Start Time: %d : %d", id(t_generator_start_time_setter).hour, id(t_generator_start_time_setter).minute);
               if(value != new_value) {              
                 esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(fast, 0x2155, new_value);
                 fast->queue_command(set_payload_command);
-                //char hex_buf[3];
-                //std::string output_str{};
-                //snprintf(hex_buf, sizeof(hex_buf), "%02x", x.hour);
-                //output_str += hex_buf;
-                //output_str += ":";
-                //snprintf(hex_buf, sizeof(hex_buf), "%02x", x.minute);
-                //output_str += hex_buf;
-                //id(generator_end_time).state = output_str;
                 ESP_LOGD("main", "Updated End ##########################################################");
               }
+            } 
+  
+  - platform: template
+    id: t_time_based_control_z_read_button
+    name: "${cat3} T Time Based Control Z Read Button"
+    on_press:
+      then:
+        - lambda: |-
+            ESP_LOGD("main", "###################### T Mode: %s", id(time_based_control_structure).state.c_str());
+
+            std::string valueStr = id(time_based_control_structure).state;
+            uint16_t id = atoi(id(t_time_based_control_id_setter).current_option().c_str());
+            uint16_t posStr = (id-1)*32;
+            uint16_t posHex = (id-1)*16;
+            
+            uint16_t controls = modbus::helpers::word_from_hex_str(valueStr, posHex);
+            ESP_LOGD("main", "###################### T Time Based Controls: 0x%x", controls);
+            std::string startTimeStr = valueStr.substr((posStr + 4), 4);
+            ESP_LOGD("main", "###################### T Time Based Start Time: %s", startTimeStr.c_str());
+            std::string endTimeStr = valueStr.substr((posStr + 8), 4);
+            ESP_LOGD("main", "###################### T Time Based End Time Time: %s", endTimeStr.c_str());
+            uint32_t power = modbus::helpers::dword_from_hex_str(valueStr, (posHex + 6));
+            ESP_LOGD("main", "###################### T Time Based Power: 0x%x", power);
+            uint16_t endSOC = modbus::helpers::word_from_hex_str(valueStr, (posHex + 10));
+            ESP_LOGD("main", "###################### T Time Based End SOC: 0x%x", endSOC);
+            uint16_t endBattery = modbus::helpers::word_from_hex_str(valueStr, (posHex + 12));
+            ESP_LOGD("main", "###################### T Time Based End Battery: 0x%x", endBattery);
+            uint16_t date = modbus::helpers::word_from_hex_str(valueStr, (posHex + 14));
+            ESP_LOGD("main", "###################### T Time Based Date: 0x%x", date);
+            
+            if((controls & 0b11) == 0b00) {
+              id(t_time_based_control_mode_setter).publish_state((size_t)0);
+            } else if((controls & 0b11) == 0b01) {
+              id(t_time_based_control_mode_setter).publish_state((size_t)1);
+            } else if((controls & 0b11) == 0b10) {
+              id(t_time_based_control_mode_setter).publish_state((size_t)2);
+            } else {
+              id(t_time_based_control_mode_setter).publish_state((size_t)3);
+              ESP_LOGD("main", "###################### T Time Based Mode Unknown: 0x%x", (controls & 0b11));
+            }            
+            
+            if((controls & 0b100) > 0) {
+              id(t_time_based_control_repeat_setter).publish_state((size_t)1);
+            } else if((controls & 0b100) == 0) {
+              id(t_time_based_control_repeat_setter).publish_state((size_t)0);
+            } else {
+              id(t_time_based_control_repeat_setter).publish_state((size_t)2);
+            }            
+            
+            if((controls & 0b10000) > 0) {
+              id(t_time_based_control_weekly_monday).turn_on();
+            } else {
+              id(t_time_based_control_weekly_monday).turn_off();
             }
+            if((controls & 0b100000) > 0) {
+              id(t_time_based_control_weekly_tuesday).turn_on();
+            } else {
+              id(t_time_based_control_weekly_tuesday).turn_off();
+            }
+            if((controls & 0b1000000) > 0) {
+              id(t_time_based_control_weekly_wednesday).turn_on();
+            } else {
+              id(t_time_based_control_weekly_wednesday).turn_off();
+            }
+            if((controls & 0b10000000) > 0) {
+              id(t_time_based_control_weekly_thursday).turn_on();
+            } else {
+              id(t_time_based_control_weekly_thursday).turn_off();
+            }
+            if((controls & 0b100000000) > 0) {
+              id(t_time_based_control_weekly_friday).turn_on();
+            } else {
+              id(t_time_based_control_weekly_friday).turn_off();
+            }
+            if((controls & 0b1000000000) > 0) {
+              id(t_time_based_control_weekly_saturday).turn_on();
+            } else {
+              id(t_time_based_control_weekly_saturday).turn_off();
+            }
+            if((controls & 0b10000000000) > 0) {
+              id(t_time_based_control_weekly_sunday).turn_on();
+            } else {
+              id(t_time_based_control_weekly_sunday).turn_off();
+            }
+            
+            startTimeStr.insert(2, ":");
+            startTimeStr.append(":00");
+            auto call1 = id(t_time_based_control_start_time_setter).make_call();
+            call1.set_time(startTimeStr);
+            call1.perform();
+            endTimeStr.insert(2, ":");
+            endTimeStr.append(":00");
+            auto call2 = id(t_time_based_control_end_time_setter).make_call();
+            call2.set_time(endTimeStr);
+            call2.perform();
+
+            id(t_time_based_control_power_setter).publish_state((float)power);
+            id(t_time_based_control_end_soc_setter).publish_state((float)endSOC);
+            id(t_time_based_control_end_battery_voltage_setter).publish_state(((float)endBattery)/10);
+            uint16_t year = (date >> 9) & 0b111111;
+            uint16_t month = (date >> 5) & 0b1111;
+            uint16_t day = (date) & 0b11111;
+            std::string dateStr = "";
+            dateStr.append(std::to_string(year+2020).c_str());
+            dateStr.append("-");
+            std::string monthStr = std::to_string(month);
+            if(monthStr.length() == 1) {
+              dateStr.append("0");
+            } 
+            dateStr.append(monthStr);
+            dateStr.append("-");
+            std::string dayStr = std::to_string(day);
+            if(dayStr.length() == 1) {
+              dateStr.append("0");
+            } 
+            dateStr.append(dayStr);
+            ESP_LOGD("main", "###################### T Time Based Date Str: %s", dateStr.c_str());
+            auto call5 = id(t_time_based_control_date_setter).make_call();
+            call5.set_date(dateStr);
+            call5.perform();
+
+
+  - platform: template
+    id: t_time_based_control_z_write_button
+    name: "${cat3} T Time Based Control Z Write Button"
+    on_press:
+      then:
+        - lambda: |-
+            uint16_t id = atoi(id(t_time_based_control_id_setter).current_option().c_str());
+            uint16_t pos = (id-1)*8;
+            
+            int16_t controls = 0b0000000000000000;
+            std::string modeStr = id(t_time_based_control_mode_setter).current_option();
+            if(modeStr.compare("Disable (0)") == 0) {
+              controls |= 0b00;
+            } else if(modeStr.compare("Charge (1)") == 0) {
+              controls |= 0b01;
+            } else if(modeStr.compare("Discharge (2)") == 0) {
+              controls |= 0b10;
+            } else {
+              controls |= 0b11;
+            }
+
+            modeStr = id(t_time_based_control_repeat_setter).current_option();
+            if(modeStr.compare("Once (0)") == 0) {
+              controls |= 0b0000;
+            } else if(modeStr.compare("Weekly (1)") == 0) {
+              controls |= 0b0100;
+            } else {
+              controls |= 0b1100;
+            }
+
+            if(id(t_time_based_control_weekly_monday).state) {
+              controls |= 0b10000;
+            }
+            if(id(t_time_based_control_weekly_tuesday).state) {
+              controls |= 0b100000;
+            }
+            if(id(t_time_based_control_weekly_wednesday).state) {
+              controls |= 0b1000000;
+            }
+            if(id(t_time_based_control_weekly_thursday).state) {
+              controls |= 0b10000000;
+            }
+            if(id(t_time_based_control_weekly_friday).state) {
+              controls |= 0b100000000;
+            }
+            if(id(t_time_based_control_weekly_saturday).state) {
+              controls |= 0b1000000000;
+            }
+             if(id(t_time_based_control_weekly_sunday).state) {
+              controls |= 0b10000000000;
+            }
+            ESP_LOGD("main", "###################### T Time Based Controls: 0x%x", controls);
+            uint16_t newStartTime = id(t_time_based_control_start_time_setter).hour * 256 + id(t_time_based_control_start_time_setter).minute;
+            ESP_LOGD("main", "###################### T Time Based Start Time: 0x%x", newStartTime);
+            uint16_t newEndTime = id(t_time_based_control_end_time_setter).hour * 256 + id(t_time_based_control_end_time_setter).minute;
+            ESP_LOGD("main", "###################### T Time Based End Time: 0x%x", newEndTime);
+            uint32_t power = id(t_time_based_control_power_setter).state;
+            ESP_LOGD("main", "###################### T Time Based Power: 0x%x", power);
+            uint16_t endSOC = id(t_time_based_control_end_soc_setter).state;
+            ESP_LOGD("main", "###################### T Time Based End SOC: 0x%x", endSOC);
+            uint16_t endBattery = id(t_time_based_control_end_battery_voltage_setter).state * 10;
+            ESP_LOGD("main", "###################### T Time Based End Battery: 0x%x", endBattery);
+            uint16_t day = id(t_time_based_control_date_setter).day;
+            uint16_t month = id(t_time_based_control_date_setter).month << 5;
+            uint16_t year = (id(t_time_based_control_date_setter).year - 2020) << 9;  
+            uint16_t date = year | month | day;
+            ESP_LOGD("main", "###################### T Time Based Date: 0x%x", date);
+
+            std::vector<uint16_t> timeBasedControlStructure;
+            timeBasedControlStructure.reserve(8);
+            timeBasedControlStructure.push_back(controls);
+            timeBasedControlStructure.push_back(newStartTime);
+            timeBasedControlStructure.push_back(newEndTime);
+            uint16_t tmpPower = (power & 0xFFFF0000) >> 16;
+            timeBasedControlStructure.push_back(tmpPower);
+            tmpPower = power & 0xFFFF;
+            timeBasedControlStructure.push_back(tmpPower);
+            timeBasedControlStructure.push_back(endSOC);
+            timeBasedControlStructure.push_back(endBattery);
+            timeBasedControlStructure.push_back(date);
+
+            esphome::modbus_controller::ModbusCommandItem set_payload_command = esphome::modbus_controller::ModbusCommandItem::create_write_multiple_command(fast, (0x2600 + pos), 8, timeBasedControlStructure);
+            fast->queue_command(set_payload_command);
+           
+datetime:
+# =========================
+#  Generator work time control
+# =========================
+  - platform: template
+    id: t_generator_start_time_setter
+    type: time
+    name: "${cat3} T Generator 1 Start time Setter"
+    optimistic: yes
+    
+  - platform: template
+    id: t_generator_end_time_setter
+    type: time
+    name: "${cat3} T Generator 2 End time Setter"
+    optimistic: yes
+ 
+# =========================
+#  Time based control
+# =========================
+  - platform: template
+    id: t_time_based_control_start_time_setter
+    type: time
+    name: "${cat3} T Time Based Control 10 Start Time Setter"
+    optimistic: yes
+
+  - platform: template
+    id: t_time_based_control_end_time_setter
+    type: time
+    name: "${cat3} T Time Based Control 11 End Time Setter"
+    optimistic: yes
+
+  - platform: template
+    id: t_time_based_control_date_setter
+    type: date
+    name: "${cat3} T Time Based Control 15 Date Setter"
+    optimistic: yes
+
 sensor:
 # =========================
 # ⚡ SYSTEM INFORMATION
@@ -950,7 +1173,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: fast
     id: accumulated_energy_of_positive
-    name: "${cat2} Accumulated Energy Of Positie/Import"
+    name: "${cat2} Accumulated Energy Of Positie Import"
     entity_category: DIAGNOSTIC
     address: 0x1306
     register_type: holding
@@ -961,7 +1184,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: fast
     id: accumulated_energy_of_negatie
-    name: "${cat2} Accumulated Energy Of Negative/Export"
+    name: "${cat2} Accumulated Energy Of Negative Export"
     entity_category: DIAGNOSTIC
     address: 0x1308
     register_type: holding
@@ -2299,210 +2522,210 @@ text_sensor:
 
       return values;
 
-  - platform: modbus_controller   #ok
-    modbus_controller_id: fast
-    id: device_model
-    name: "${cat1} Device Model"
-    entity_category: DIAGNOSTIC
-    address: 0x1A00 
-    register_type: holding
-    register_count: 8
-    raw_encode: HEXBYTES
-    response_size: 16
-    lambda: |-
-      int len = x.length();
-      std::string newString;
-      for(int i=0; i< len; i+=2)
-      {
-          std::string byte = x.substr(i,2);
-          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
-          newString.push_back(chr);
-      }
-      return newString;
+  #- platform: modbus_controller   #ok - commented out as there is no need for it unless inverter is not configured
+  #  modbus_controller_id: fast
+  #  id: device_model
+  #  name: "${cat1} Device Model"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1A00 
+  #  register_type: holding
+  #  register_count: 8
+  #  raw_encode: HEXBYTES
+  #  response_size: 16
+  #  lambda: |-
+  #    int len = x.length();
+  #    std::string newString;
+  #    for(int i=0; i< len; i+=2)
+  #    {
+  #        std::string byte = x.substr(i,2);
+  #        char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+  #        newString.push_back(chr);
+  #    }
+  #    return newString;
 
-  - platform: modbus_controller   #ok
-    modbus_controller_id: fast
-    id: device_model_extended
-    name: "${cat1} Device Model Extended"
-    entity_category: DIAGNOSTIC
-    address: 0x1B10 
-    register_type: holding
-    register_count: 8
-    raw_encode: HEXBYTES
-    response_size: 16
-    lambda: |-
-      int len = x.length();
-      std::string newString;
-      for(int i=0; i< len; i+=2)
-      {
-          std::string byte = x.substr(i,2);
-          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
-          newString.push_back(chr);
-      }
-      return newString;
+  #- platform: modbus_controller   #ok - commented out as there is no need for it unless inverter is not configured
+  #  modbus_controller_id: fast
+  #  id: device_model_extended
+  #  name: "${cat1} Device Model Extended"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1B10 
+  #  register_type: holding
+  #  register_count: 8
+  #  raw_encode: HEXBYTES
+  #  response_size: 16
+  #  lambda: |-
+  #    int len = x.length();
+  #    std::string newString;
+  #    for(int i=0; i< len; i+=2)
+  #    {
+  #        std::string byte = x.substr(i,2);
+  #        char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+  #        newString.push_back(chr);
+  #    }
+  #    return newString;
   
-  - platform: template
-    id: device_model_full_name
-    name: "${cat1} Device Model Full Name"
-    lambda: |-
-      std::string newString;
-      newString.append(id(device_model).state);
-      newString.append(id(device_model_extended).state);
-      return newString;
-    update_interval: 60s
+  #- platform: template #ok - commented out as there is no need for it unless inverter is not configured
+  #  id: device_model_full_name
+  #  name: "${cat1} Device Model Full Name"
+  #  lambda: |-
+  #    std::string newString;
+  #    newString.append(id(device_model).state);
+  #    newString.append(id(device_model_extended).state);
+  #    return newString;
+  #  update_interval: 60s
     
-  - platform: modbus_controller   #ok
-    modbus_controller_id: fast
-    id: device_serial_number
-    name: "${cat1} Device Serial Number"
-    entity_category: DIAGNOSTIC
-    address: 0x1A10
-    register_type: holding
-    register_count: 8
-    raw_encode: HEXBYTES
-    response_size: 16
-    lambda: |-
-      int len = x.length();
-      std::string newString;
-      for(int i=0; i< len; i+=2)
-      {
-          std::string byte = x.substr(i,2);
-          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
-          newString.push_back(chr);
-      }
-      return newString;
+  #- platform: modbus_controller   #ok - commented out as there is no need for it unless inverter is not configured
+  #  modbus_controller_id: fast
+  #  id: device_serial_number
+  #  name: "${cat1} Device Serial Number"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1A10
+  #  register_type: holding
+  #  register_count: 8
+  #  raw_encode: HEXBYTES
+  #  response_size: 16
+  #  lambda: |-
+  #    int len = x.length();
+  #    std::string newString;
+  #    for(int i=0; i< len; i+=2)
+  #    {
+  #        std::string byte = x.substr(i,2);
+  #        char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+  #        newString.push_back(chr);
+  #    }
+  #    return newString;
 
-  - platform: modbus_controller   #ok
-    modbus_controller_id: fast
-    id: device_serial_number_extended
-    name: "${cat1} Device Serial Number Extended"
-    entity_category: DIAGNOSTIC
-    address: 0x1B20
-    register_type: holding
-    register_count: 8
-    raw_encode: HEXBYTES
-    response_size: 16
-    lambda: |-
-      int len = x.length();
-      std::string newString;
-      for(int i=0; i< len; i+=2)
-      {
-          std::string byte = x.substr(i,2);
-          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
-          newString.push_back(chr);
-      }
-      return newString;
+  #- platform: modbus_controller   #ok - commented out as there is no need for it unless inverter is not configured
+  #  modbus_controller_id: fast
+  #  id: device_serial_number_extended
+  #  name: "${cat1} Device Serial Number Extended"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1B20
+  #  register_type: holding
+  #  register_count: 8
+  #  raw_encode: HEXBYTES
+  #  response_size: 16
+  #  lambda: |-
+  #    int len = x.length();
+  #    std::string newString;
+  #    for(int i=0; i< len; i+=2)
+  #    {
+  #        std::string byte = x.substr(i,2);
+  #        char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+  #        newString.push_back(chr);
+  #    }
+  #    return newString;
   
-  - platform: template
-    id: device_serial_number_full
-    name: "${cat1} Device Serial Number Full"
-    lambda: |-
-      std::string newString;
-      newString.append(id(device_serial_number).state);
-      newString.append(id(device_serial_number_extended).state);
-      return newString;
-    update_interval: 60s
+  #- platform: template #ok - commented out as there is no need for it unless inverter is not configured
+  #  id: device_serial_number_full
+  #  name: "${cat1} Device Serial Number Full"
+  #  lambda: |-
+  #    std::string newString;
+  #    newString.append(id(device_serial_number).state);
+  #    newString.append(id(device_serial_number_extended).state);
+  #    return newString;
+  #  update_interval: 60s
   
-  - platform: modbus_controller   #ok but not documented in file for JSDSolar
-    modbus_controller_id: fast
-    id: modbus_protocol_version
-    name: "${cat1} Modbus Protocol Version"
-    entity_category: DIAGNOSTIC
-    address: 0x1A18
-    register_type: holding
-    raw_encode: HEXBYTES
-    response_size: 2
-    lambda: |-
-      std::string res; 
-      res += x;
-      res.insert(2,".");
-      return res;
+  #- platform: modbus_controller   #ok but not documented in file for JSDSolar
+  #  modbus_controller_id: fast
+  #  id: modbus_protocol_version
+  #  name: "${cat1} Modbus Protocol Version"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1A18
+  #  register_type: holding
+  #  raw_encode: HEXBYTES
+  #  response_size: 2
+  #  lambda: |-
+  #    std::string res; 
+  #    res += x;
+  #    res.insert(2,".");
+  #    return res;
 
-  - platform: modbus_controller  #ok 
-    modbus_controller_id: fast
-    id: master_firmware_version
-    name: "${cat1} Master Firmware Version"
-    entity_category: DIAGNOSTIC
-    address: 0x1A1C
-    register_type: holding
-    register_count: 3
-    raw_encode: HEXBYTES
-    response_size: 6
-    lambda: |-
-      int len = x.length();
-      std::string newString;
-      for(int i=0; i< len; i+=2)
-      {
-          std::string byte = x.substr(i,2);
-          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
-          newString.push_back(chr);
-      }
-      return newString;    
+  #- platform: modbus_controller  #ok - commented out as there is no need for it unless inverter is not configured 
+  #  modbus_controller_id: fast
+  #  id: master_firmware_version
+  #  name: "${cat1} Master Firmware Version"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1A1C
+  #  register_type: holding
+  #  register_count: 3
+  #  raw_encode: HEXBYTES
+  #  response_size: 6
+  #  lambda: |-
+  #    int len = x.length();
+  #    std::string newString;
+  #    for(int i=0; i< len; i+=2)
+  #    {
+  #        std::string byte = x.substr(i,2);
+  #        char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+  #        newString.push_back(chr);
+  #    }
+  #    return newString;    
   
-  - platform: modbus_controller  ##ok but not documented in file for JSDSolar
-    modbus_controller_id: fast
-    id: master_firmware_build_date
-    name: "${cat1} Master Firmware Build Date"
-    entity_category: DIAGNOSTIC
-    address: 0x1A23
-    register_type: holding
-    register_count: 3
-    raw_encode: HEXBYTES
-    response_size: 6
-    lambda: |-
-      int len = x.length();
-      std::string newString;
-      for(int i=0; i< len; i+=2)
-      {
-          std::string byte = x.substr(i,2);
-          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
-          newString.push_back(chr);
-          if(i==2 || i == 6) newString.push_back('.');
-      }
-      return newString;    
+  #- platform: modbus_controller  ##ok but not documented in file for JSDSolar
+  #  modbus_controller_id: fast
+  #  id: master_firmware_build_date
+  #  name: "${cat1} Master Firmware Build Date"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1A23
+  #  register_type: holding
+  #  register_count: 3
+  #  raw_encode: HEXBYTES
+  #  response_size: 6
+  #  lambda: |-
+  #    int len = x.length();
+  #    std::string newString;
+  #    for(int i=0; i< len; i+=2)
+  #    {
+  #        std::string byte = x.substr(i,2);
+  #        char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+  #        newString.push_back(chr);
+  #        if(i==2 || i == 6) newString.push_back('.');
+  #    }
+  #    return newString;    
   
-  - platform: modbus_controller  ##ok
-    modbus_controller_id: fast
-    id: slave_firmware_version
-    name: "${cat1} Slave Firmware Version"
-    entity_category: DIAGNOSTIC
-    address: 0x1A26
-    register_type: holding
-    register_count: 3
-    raw_encode: HEXBYTES
-    response_size: 6
-    lambda: |-
-      int len = x.length();
-      std::string newString;
-      for(int i=0; i< len; i+=2)
-      {
-          std::string byte = x.substr(i,2);
-          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
-          newString.push_back(chr);
-      }
-      return newString;    
+  #- platform: modbus_controller  ##ok
+  #  modbus_controller_id: fast
+  #  id: slave_firmware_version
+  #  name: "${cat1} Slave Firmware Version"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1A26
+  #  register_type: holding
+  #  register_count: 3
+  #  raw_encode: HEXBYTES
+  #  response_size: 6
+  #  lambda: |-
+  #    int len = x.length();
+  #    std::string newString;
+  #    for(int i=0; i< len; i+=2)
+  #    {
+  #        std::string byte = x.substr(i,2);
+  #        char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+  #        newString.push_back(chr);
+  #    }
+  #    return newString;    
   
-  - platform: modbus_controller  ##ok but not documented in file for JSDSolar
-    modbus_controller_id: fast
-    id: slave_firmware_build_date
-    name: "${cat1} Slave Firmware Build Date"
-    entity_category: DIAGNOSTIC
-    address: 0x1A2D
-    register_type: holding
-    register_count: 3
-    raw_encode: HEXBYTES
-    response_size: 6
-    lambda: |-
-      int len = x.length();
-      std::string newString;
-      for(int i=0; i< len; i+=2)
-      {
-          std::string byte = x.substr(i,2);
-          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
-          newString.push_back(chr);
-          if(i==2 || i == 6) newString.push_back('.');
-      }      
-      return newString;    
+  #- platform: modbus_controller  ##ok but not documented in file for JSDSolar
+  #  modbus_controller_id: fast
+  #  id: slave_firmware_build_date
+  #  name: "${cat1} Slave Firmware Build Date"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1A2D
+  #  register_type: holding
+  #  register_count: 3
+  #  raw_encode: HEXBYTES
+  #  response_size: 6
+  #  lambda: |-
+  #    int len = x.length();
+  #    std::string newString;
+  #    for(int i=0; i< len; i+=2)
+  #    {
+  #        std::string byte = x.substr(i,2);
+  #        char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+  #        newString.push_back(chr);
+  #        if(i==2 || i == 6) newString.push_back('.');
+  #    }      
+  #    return newString;    
   
   - platform: modbus_controller  ##ok
     modbus_controller_id: fast
@@ -2551,26 +2774,26 @@ text_sensor:
         }
       }
 
-  - platform: modbus_controller  ## does not work - cant read this adress -maybe as this is 4.19 vs 4.21 protocol version
-    modbus_controller_id: fast
-    id: ems_firmware_version
-    name: "${cat1} EMS Firmware Version"
-    entity_category: DIAGNOSTIC
-    address: 0x1A60
-    register_type: holding
-    register_count: 3
-    raw_encode: HEXBYTES
-    response_size: 6
-    lambda: |-
-      int len = x.length();
-      std::string newString;
-      for(int i=0; i< len; i+=2)
-      {
-          std::string byte = x.substr(i,2);
-          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
-          newString.push_back(chr);
-      }      
-      return newString;    
+  #- platform: modbus_controller  #ok but commented out as this is not valuable information from control point of view
+  #  modbus_controller_id: fast
+  #  id: ems_firmware_version
+  #  name: "${cat1} EMS Firmware Version"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x1A60
+  #  register_type: holding
+  #  register_count: 3
+  #  raw_encode: HEXBYTES
+  #  response_size: 6
+  #  lambda: |-
+  #    int len = x.length();
+  #    std::string newString;
+  #    for(int i=0; i< len; i+=2)
+  #    {
+  #        std::string byte = x.substr(i,2);
+  #        char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+  #        newString.push_back(chr);
+  #    }      
+  #    return newString;    
 
   #- platform: modbus_controller  ## does not work - cant read this adress -maybe as this is 4.19 vs 4.21 protocol version
   #  modbus_controller_id: fast
@@ -2663,84 +2886,74 @@ text_sensor:
   - platform: modbus_controller
     modbus_controller_id: fast
     id: generator_start_time
-    name: "${cat3} Generator Start Time"
+    name: "${cat3} T Generator Start Time"
     entity_category: DIAGNOSTIC
     address: 0x2154
     register_type: holding
     raw_encode: HEXBYTES
     lambda: |-
       std::string newString;
-      std::string setterString;
       newString = x;   
-      newString.insert(2, ":");   
-      setterString = newString;
-      setterString.append(":00");
-      auto call = id(generator_start_time_setter).make_call();
-      call.set_time(setterString);
-      call.perform();
-      return newString;    
+      newString.insert(2, ":");
+      return newString; 
+    internal: true       
   
   - platform: modbus_controller
     modbus_controller_id: fast
     id: generator_end_time
-    name: "${cat3} Generator End Time"
+    name: "${cat3} T Generator End Time"
     entity_category: DIAGNOSTIC
     address: 0x2155
     register_type: holding
     raw_encode: HEXBYTES
     lambda: |-
       std::string newString;
-      std::string setterString;
       newString = x;   
       newString.insert(2, ":");   
-      setterString.append(newString);
-      setterString.append(":00");
-      auto call = id(generator_end_time_setter).make_call();
-      call.set_time(setterString);
-      call.perform();
-      return newString;       
+      return newString; 
+    internal: true      
 
-  - platform: modbus_controller   #ok
-    modbus_controller_id: fast
-    id: wifi_sta_ssid
-    name: "${cat4} WIFI STA SSID"
-    entity_category: DIAGNOSTIC
-    address: 0x3060
-    register_type: holding
-    register_count: 16
-    raw_encode: HEXBYTES
-    response_size: 32
-    lambda: |-
-      int len = x.length();
-      std::string newString;
-      for(int i=0; i< len; i+=2)
-      {
-          std::string byte = x.substr(i,2);
-          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
-          newString.push_back(chr);
-      }
-      return newString;
+  #- platform: modbus_controller   #ok - commented out as there is no need for it unless inverter is not configured
+  #  modbus_controller_id: fast
+  #  id: wifi_sta_ssid
+  #  name: "${cat4} WIFI STA SSID"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x3060
+  #  register_type: holding
+  #  register_count: 16
+  #  raw_encode: HEXBYTES
+  #  response_size: 32
+  #  lambda: |-
+  #    int len = x.length();
+  #    std::string newString;
+  #    for(int i=0; i< len; i+=2)
+  #    {
+  #        std::string byte = x.substr(i,2);
+  #        char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+  #        newString.push_back(chr);
+  #    }
+  #    return newString;
 
-  - platform: modbus_controller   #ok
-    modbus_controller_id: fast
-    id: wifi_sta_password
-    name: "${cat4} WIFI STA Password"
-    entity_category: DIAGNOSTIC
-    address: 0x3070
-    register_type: holding
-    register_count: 16
-    raw_encode: HEXBYTES
-    response_size: 32
-    lambda: |-
-      int len = x.length();
-      std::string newString;
-      for(int i=0; i< len; i+=2)
-      {
-          std::string byte = x.substr(i,2);
-          char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
-          newString.push_back(chr);
-      }
-      return newString;
+  #- platform: modbus_controller   #ok - commented out as there is no need for it unless inverter is not configured
+  #  modbus_controller_id: fast
+  #  id: wifi_sta_password
+  #  name: "${cat4} WIFI STA Password"
+  #  entity_category: DIAGNOSTIC
+  #  address: 0x3070
+  #  register_type: holding
+  #  register_count: 16
+  #  raw_encode: HEXBYTES
+  #  response_size: 32
+  #  lambda: |-
+  #    int len = x.length();
+  #    std::string newString;
+  #    for(int i=0; i< len; i+=2)
+  #    {
+  #        std::string byte = x.substr(i,2);
+  #        char chr = (char) (int)strtol(byte.c_str(), nullptr, 16);
+  #        newString.push_back(chr);
+  #    }
+  #    return newString;
 
 # =========================
 # 🚨 ERRORS
@@ -3064,10 +3277,65 @@ text_sensor:
       return values;
 
 # =========================
+#  Time based control
+# =========================
+  - platform: modbus_controller
+    modbus_controller_id: fast
+    id: time_based_control_structure
+    name: "${cat4} T Time Based Control Structure"
+    entity_category: DIAGNOSTIC
+    address: 0x2600
+    register_type: holding
+    raw_encode: HEXBYTES
+    register_count: 48
+    response_size: 192
+    internal: true
+
+# =========================
 # 🎛 CONTROL
 # =========================
 
 select:
+# =========================
+#  Time based control
+# =========================
+  - platform: template
+    id: t_time_based_control_id_setter
+    name: "${cat3} T Time Based Control Z Id Setter"
+    optimistic: true
+    options:
+      - "1"
+      - "2"
+      - "3"
+      - "4"
+      - "5"
+      - "6"
+    initial_option: "1"
+  
+  - platform: template
+    id: t_time_based_control_mode_setter
+    name: "${cat3} T Time Based Control 01 Mode Setter"
+    optimistic: true
+    options:
+      - "Disable (0)"
+      - "Charge (1)"
+      - "Discharge (2)"
+      - "Reserved (3) do not set"
+    initial_option: "Disable (0)"
+
+  - platform: template
+    id: t_time_based_control_repeat_setter
+    name: "${cat3} T Time Based Control 02 Repeat Setter"
+    optimistic: true
+    options:
+      - "Once (0)"
+      - "Weekly (1)"
+      - "Reserved (2) do not set"
+    initial_option: "Once (0)"
+
+# =========================
+#  Inverter params
+# =========================
   - platform: modbus_controller   #ok inverter settings -> QuickSettings(3) -> Work Mode                                 
     modbus_controller_id: fast
     id: work_mode
@@ -3247,7 +3515,7 @@ select:
   - platform: modbus_controller                                   
     modbus_controller_id: fast
     id: generatror_dry_force_on_off
-    name: "${cat3} Generator DRY force ON/OFF"
+    name: "${cat3} Generator DRY force ONOFF"
     entity_category: config
     use_write_multiple: true
     address: 0x2156
@@ -3409,10 +3677,9 @@ select:
     value_type: U_WORD
     optionsmap:
       "Disable": 0
-      #"Power limit by external device": 1
-      #"Power limit by PVI external CT sensor": 2
-      "CT sensor": 2
-      #"Power limit by digital meter device": 3
+      "Power limit by external device": 1
+      "Power limit by PVI external CT sensor": 2
+      "Power limit by digital meter device": 3
       
   - platform: modbus_controller                                   
     modbus_controller_id: fast
@@ -3442,10 +3709,10 @@ select:
     address: 0x30B5
     value_type: U_WORD
     optionsmap:
-      #"CT on Grid (Meter on Grid)": 0
-      #"CT on Load (Meter on Load)": 1
-      "Grid Side": 0
-      "Load Side": 1
+      "CT on Grid (Meter on Grid)": 0
+      "CT on Load (Meter on Load)": 1
+      #"Grid Side": 0
+      #"Load Side": 1
 
 
 
@@ -3532,6 +3799,44 @@ select:
 
 
 number:
+#  Time based control
+# =========================
+  - platform: template                                  
+    id: t_time_based_control_power_setter
+    name: "${cat3} T Time Based Control 12 Power Setter"
+    optimistic: true
+    entity_category: config
+    min_value: 0
+    max_value: 6000
+    step: 1
+    unit_of_measurement: "W"
+    icon: mdi:cog
+
+  - platform: template                                  
+    id: t_time_based_control_end_soc_setter
+    name: "${cat3} T Time Based Control 13 End SOC Setter"
+    optimistic: true
+    entity_category: config
+    min_value: 0
+    max_value: 100
+    step: 1
+    unit_of_measurement: "%"
+    icon: mdi:cog
+
+  - platform: template                                  
+    id: t_time_based_control_end_battery_voltage_setter
+    name: "${cat3} T Time Based Control 14 End Battery Voltage Setter"
+    optimistic: true
+    entity_category: config
+    min_value: 40.0
+    max_value: 60.0
+    step: 0.1
+    unit_of_measurement: "V"
+    icon: mdi:cog
+        
+# =========================
+#  Iinverter params control
+# =========================
   - platform: modbus_controller     #ok inverter settings -> QuickSettings(2) -> Discharge Stop Voltage (V)   - this is used only if capacity management mode is set to "Voltage"                            
     modbus_controller_id: fast
     id: discharge_stop_voltage
@@ -4306,6 +4611,47 @@ number:
     unit_of_measurement: "W"
     
 switch:
+# =========================
+#  Time based control
+# =========================
+  - platform: template
+    id: t_time_based_control_weekly_monday
+    name: "${cat3} T Time Based Control 03 Weekly (1) Monday"
+    optimistic: true
+
+  - platform: template
+    id: t_time_based_control_weekly_tuesday
+    name: "${cat3} T Time Based Control 04 Weekly (2) Tuesday"
+    optimistic: true
+
+  - platform: template
+    id: t_time_based_control_weekly_wednesday
+    name: "${cat3} T Time Based Control 05 Weekly (3) Wednesday"
+    optimistic: true
+
+  - platform: template
+    id: t_time_based_control_weekly_thursday
+    name: "${cat3} T Time Based Control 06 Weekly (4) Thursday"
+    optimistic: true
+
+  - platform: template
+    id: t_time_based_control_weekly_friday
+    name: "${cat3} T Time Based Control 07 Weekly (5) Friday"
+    optimistic: true
+
+  - platform: template
+    id: t_time_based_control_weekly_saturday
+    name: "${cat3} T Time Based Control 08 Weekly (6) Saturday"
+    optimistic: true
+
+  - platform: template
+    id: t_time_based_control_weekly_sunday
+    name: "${cat3} T Time Based Control 09 Weekly (7) Sunday"
+    optimistic: true
+
+# =========================
+#  Inverter params
+# ========================= 
   - platform: modbus_controller   #ok inverter on/off remote button
     modbus_controller_id: fast
     name: "${cat4} Inverter Power"
